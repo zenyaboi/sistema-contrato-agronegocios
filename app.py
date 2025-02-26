@@ -1,38 +1,43 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QWidget, QPushButton
 
-def funcTeste():
-    print("teste")
+class MainWindow(QWidget):
+    def __init__(self):
+        super().__init__()
 
-# creating application
-app = QApplication(sys.argv)
+        # setting the window size
+        width = 640
+        height = 480
 
-# creating app window
-window = QWidget()
+        # setting a fixed size for the app (unable to resize)
+        self.setFixedSize(width, height)
 
-# setting the window size
-width = 640
-height = 480
+        # window title
+        self.setWindowTitle("Sistema de Contrato")
 
-# setting a fixed size for the app (unable to resize)
-window.setFixedSize(width, height)
+        # creating main buttons
+        btn = QPushButton("Botão 1", self)
+        btn2 = QPushButton("Botão 2", self)
+        btn3 = QPushButton("Botão 3", self)
+        #                x    y    w    h
+        btn.setGeometry(100, 50, 150, 150)
+        btn2.setGeometry(400, 50, 150, 150)
+        btn3.setGeometry(100, 250, 150, 150)
 
-# window title
-window.setWindowTitle("Sistema de Contrato")
+        btn.clicked.connect(self.funcTeste)
 
-# creating main buttons
-btn = QPushButton("Botão 1", window)
-btn2 = QPushButton("Botão 2", window)
-btn3 = QPushButton("Botão 3", window)
-#                x    y    w    h
-btn.setGeometry(100, 50, 150, 150)
-btn2.setGeometry(400, 50, 150, 150)
-btn3.setGeometry(100, 250, 150, 150)
+    def funcTeste(self):
+        print("teste")
 
-btn.clicked.connect(funcTeste)
+if __name__ == "__main__":
+    # creating application
+    app = QApplication(sys.argv)
 
-# showing all widgets (if any)
-window.show()
+    # creating app window
+    window = MainWindow()
 
-# starting the app
-sys.exit(app.exec())
+    # showing all widgets (if any)
+    window.show()
+
+    # starting the app
+    sys.exit(app.exec())
