@@ -28,6 +28,7 @@ class MainWindow(QWidget):
 
         btnContract.clicked.connect(self.openSecondWindow)
         btnClient.clicked.connect(self.openThirdWindow)
+        btnExit.clicked.connect(self.quitApp)
 
     def openSecondWindow(self):
         self.second_window = SecondWindow()
@@ -46,6 +47,9 @@ class MainWindow(QWidget):
         self.third_window.move(main_window_position.x() + self.width(), main_window_position.y() + self.height() - 300)
 
         self.third_window.show()
+    
+    def quitApp(self):
+        sys.exit()
 
 if __name__ == "__main__":
     # creating application
