@@ -1,5 +1,6 @@
 import sys
 from contract import *
+from client import *
 from PyQt6.QtWidgets import QApplication, QWidget, QPushButton
 
 class MainWindow(QWidget):
@@ -17,24 +18,34 @@ class MainWindow(QWidget):
         self.setWindowTitle("Sistema de Contrato")
 
         # creating main buttons
-        btn = QPushButton("Botão 1", self)
-        btn2 = QPushButton("Botão 2", self)
-        btn3 = QPushButton("Botão 3", self)
+        btnContract = QPushButton("Botão 1", self)
+        btnClient = QPushButton("Botão 2", self)
+        btnExit = QPushButton("Botão 3", self)
         #                x    y    w    h
-        btn.setGeometry(100, 50, 150, 150)
-        btn2.setGeometry(400, 50, 150, 150)
-        btn3.setGeometry(100, 250, 150, 150)
+        btnContract.setGeometry(100, 50, 150, 150)
+        btnClient.setGeometry(400, 50, 150, 150)
+        btnExit.setGeometry(100, 250, 150, 150)
 
-        btn.clicked.connect(self.openSecondWindow)
+        btnContract.clicked.connect(self.openSecondWindow)
+        btnClient.clicked.connect(self.openThirdWindow)
 
     def openSecondWindow(self):
         self.second_window = SecondWindow()
 
         main_window_position = self.pos()
 
-        self.second_window.move(main_window_position.x() + self.width(), main_window_position.y())
+        self.second_window.move(main_window_position.x() + self.width(), main_window_position.y() + self.height() - 500)
 
         self.second_window.show()
+    
+    def openThirdWindow(self):
+        self.third_window = ThirdWindow()
+
+        main_window_position = self.pos()
+
+        self.third_window.move(main_window_position.x() + self.width(), main_window_position.y() + self.height() - 300)
+
+        self.third_window.show()
 
 if __name__ == "__main__":
     # creating application
