@@ -8,6 +8,11 @@ def add_background(canvas, doc, image_path):
     canvas.drawImage(image_path, 0, 0, width=595, height=842)
     canvas.restoreState()
 
+def add_overlay_text(canvas, size, x, y, text):
+    canvas.setFont("Helvetica-Bold", size)
+    canvas.setFillColorRGB(0, 0, 0)
+    canvas.drawString(x, y, text)
+
 def createPDF(filename):
     doc = SimpleDocTemplate(filename, pagesize=A4)
     styles = getSampleStyleSheet()
@@ -20,6 +25,7 @@ def createPDF(filename):
 
     def on_page1(canvas, doc):
         add_background(canvas, doc, image_page1)
+        add_overlay_text(canvas, 12, 110, 615, "TESTE TESTE TESTE TESTE TESTE!")
 
     def on_page2(canvas, doc):
         add_background(canvas, doc, image_page2)
@@ -43,3 +49,4 @@ def createPDF(filename):
 
 if __name__ == "__main__":
     createPDF("output.pdf")
+    print("created pdf file")
