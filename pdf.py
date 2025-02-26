@@ -33,17 +33,6 @@ def createPDF(filename):
     def on_page3(canvas, doc):
         add_background(canvas, doc, image_page3)
 
-    content.append(Spacer(1, 50))
-    content.append(Paragraph("Título sobre a página 1", styles["Title"]))
-    content.append(PageBreak())
-
-    content.append(Spacer(1, 50))
-    content.append(Paragraph("Título sobre a página 2", styles["Title"]))
-    content.append(PageBreak())
-
-    content.append(Spacer(1, 50))
-    content.append(Paragraph("Título sobre a página 3", styles["Title"]))
-
     doc.build(content, onFirstPage=on_page1, onLaterPages=lambda c, d: on_page2(c, d) if d.page == 2 else on_page3(c, d))
 
     print("created pdf file")
