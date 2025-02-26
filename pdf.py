@@ -46,7 +46,8 @@ def createPDF(filename):
 
     doc.build(content, onFirstPage=on_page1, onLaterPages=lambda c, d: on_page2(c, d) if d.page == 2 else on_page3(c, d))
 
+    print("created pdf file")
+
 
 if __name__ == "__main__":
     createPDF("output.pdf")
-    print("created pdf file")
