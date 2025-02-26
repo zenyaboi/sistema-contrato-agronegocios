@@ -15,10 +15,15 @@ class SecondWindow(QWidget):
         # window title
         self.setWindowTitle("Contratos")
 
-        btn = QPushButton("Butao", self)
-        btn.setGeometry(100, 100, 100, 100)
-        btn.clicked.connect(self.teste)
+        btnCreate = QPushButton("Criar Contrato", self)
+        btnCreate.setGeometry(100, 50, 150, 150)
+
+        btnEdit = QPushButton("Editar contrato", self)
+        btnEdit.setGeometry(400, 50, 150, 150)
+
+        btnExit = QPushButton("Sair da Janela", self)
+        btnExit.setGeometry(100, 250, 150, 150)
+        btnExit.clicked.connect(self.exitWindow)
     
-    def teste(self):
-        print("teste")
-        createPDF("output.pdf")
+    def exitWindow(self):
+        self.close()

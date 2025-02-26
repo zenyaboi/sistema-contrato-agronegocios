@@ -18,10 +18,11 @@ class MainWindow(QWidget):
         self.setWindowTitle("Sistema de Contrato")
 
         # creating main buttons
-        btnContract = QPushButton("Botão 1", self)
-        btnClient = QPushButton("Botão 2", self)
-        btnExit = QPushButton("Botão 3", self)
-        #                x    y    w    h
+        btnContract = QPushButton("Contratos", self)
+        btnClient = QPushButton("Clientes", self)
+        btnExit = QPushButton("Fechar aplicativo", self)
+
+        #                       x    y    w    h
         btnContract.setGeometry(100, 50, 150, 150)
         btnClient.setGeometry(400, 50, 150, 150)
         btnExit.setGeometry(100, 250, 150, 150)
