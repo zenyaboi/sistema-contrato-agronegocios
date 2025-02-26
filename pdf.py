@@ -1,42 +1,39 @@
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import getSampleStyleSheet
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
 from reportlab.pdfgen import canvas
 
-def add_background(canvas, doc, image_path):
-    canvas.saveState()
+def add_background(canvas, image_path):
     canvas.drawImage(image_path, 0, 0, width=595, height=842)
-    canvas.restoreState()
 
-def add_overlay_text(canvas, size, x, y, text):
-    canvas.setFont("Helvetica-Bold", size)
+def add_overlay_text(canvas, x, y, text, font_size=12, font_name="Helvetica-Bold"):
+    canvas.setFont(font_name, font_size)
     canvas.setFillColorRGB(0, 0, 0)
     canvas.drawString(x, y, text)
 
 def createPDF(filename):
-    doc = SimpleDocTemplate(filename, pagesize=A4)
-    styles = getSampleStyleSheet()
-    content = []
-
     # Background images path
     image_page1 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0001.jpg"
     image_page2 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0002.jpg"
     image_page3 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0003.jpg"
 
-    def on_page1(canvas, doc):
-        add_background(canvas, doc, image_page1)
-        add_overlay_text(canvas, 12, 110, 615, "TESTE TESTE TESTE TESTE TESTE!")
+    # Create a PDF using canvas
+    c = canvas.Canvas(filename, pagesize=A4)
 
-    def on_page2(canvas, doc):
-        add_background(canvas, doc, image_page2)
+    # Page 1
+    add_background(c, image_page1)
+    add_overlay_text(c, 110, 615, "TESTE TESTE TESTE TESTE TESTE!")
+    c.showPage()  # Finalize the current page and start a new one
 
-    def on_page3(canvas, doc):
-        add_background(canvas, doc, image_page3)
+    # Page 2
+    add_background(c, image_page2)
+    c.showPage()  # Finalize the current page and start a new one
 
-    doc.build(content, onFirstPage=on_page1, onLaterPages=lambda c, d: on_page2(c, d) if d.page == 2 else on_page3(c, d))
+    # Page 3
+    add_background(c, image_page3)
+    c.showPage()  # Finalize the current page
 
+    # Save the PDF
+    c.save()
     print("created pdf file")
-
 
 if __name__ == "__main__":
     createPDF("output.pdf")
