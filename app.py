@@ -1,4 +1,5 @@
 import sys
+from contract import *
 from PyQt6.QtWidgets import QApplication, QWidget, QPushButton
 
 class MainWindow(QWidget):
@@ -24,10 +25,16 @@ class MainWindow(QWidget):
         btn2.setGeometry(400, 50, 150, 150)
         btn3.setGeometry(100, 250, 150, 150)
 
-        btn.clicked.connect(self.funcTeste)
+        btn.clicked.connect(self.openSecondWindow)
 
-    def funcTeste(self):
-        print("teste")
+    def openSecondWindow(self):
+        self.second_window = SecondWindow()
+
+        main_window_position = self.pos()
+
+        self.second_window.move(main_window_position.x() + self.width(), main_window_position.y())
+
+        self.second_window.show()
 
 if __name__ == "__main__":
     # creating application
