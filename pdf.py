@@ -3,10 +3,29 @@ from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
 from reportlab.pdfgen import canvas
 
+def add_background(canvas, doc, image_path):
+    canvas.saveState()
+    canvas.drawImage(image_path, 0, 0, width=595, height=842)
+    canvas.restoreState()
+
 def createPDF(filename):
     doc = SimpleDocTemplate(filename, pagesize=A4)
     styles = getSampleStyleSheet()
     content = []
+
+    # Background images path
+    image_page1 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0001.jpg"
+    image_page2 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0002.jpg"
+    image_page3 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0003.jpg"
+
+    def on_page1(canvas, doc):
+        add_background(canvas, doc, image_page1)
+
+    def on_page2(canvas, doc):
+        add_background(canvas, doc, image_page2)
+
+    def on_page3(canvas, doc):
+        add_background(canvas, doc, image_page3)
 
     content.append(Spacer(1, 50))
     content.append(Paragraph("Título sobre a página 1", styles["Title"]))
@@ -19,8 +38,7 @@ def createPDF(filename):
     content.append(Spacer(1, 50))
     content.append(Paragraph("Título sobre a página 3", styles["Title"]))
 
-    # Construir o PDF e aplicar a imagem de fundo correta para cada página
-    doc.build(content)
+    doc.build(content, onFirstPage=on_page1, onLaterPages=lambda c, d: on_page2(c, d) if d.page == 2 else on_page3(c, d))
 
 
 if __name__ == "__main__":
