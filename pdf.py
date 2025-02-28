@@ -28,6 +28,19 @@ def createPDF(filename):
     add_overlay_text(c, 138, 597, "12.123.123/0001-23", 10)
     add_overlay_text(c, 280, 597, "TESTE TESTE TESTE!", 10)
     add_overlay_text(c, 155, 579, "RUA TESTE TESTE TESTE TESTE TESTE, 202, NUMERO CASA TERREO AP RODOVIA", 10)
+    add_overlay_text(c, 145, 562, "TESTE TESTE", 10)
+    add_overlay_text(c, 292, 562, "TT", 10)
+    add_overlay_text(c, 140, 543, "BRASIL TESTE", 10)
+    add_overlay_text(c, 300, 543, "00.000-000", 10)
+    # buyer info
+    add_overlay_text(c, 120, 496, "TESTE TESTE TESTE TESTE TESTE!", 12)
+    add_overlay_text(c, 160, 474, "12.123.123/0001-23", 10)
+    add_overlay_text(c, 290, 474, "TESTE TESTE TESTE!", 10)
+    add_overlay_text(c, 174, 455, "RUA TESTE TESTE TESTE TESTE TESTE, 202, NUMERO CASA TERREO AP RODOVIA", 10)
+    add_overlay_text(c, 165, 438, "TESTE TESTE", 10)
+    add_overlay_text(c, 289, 438, "TT", 10)
+    add_overlay_text(c, 160, 420, "BRASIL TESTE", 10)
+    add_overlay_text(c, 300, 420, "00.000-000", 10)
 
     c.showPage()  # Finalize the current page and start a new one
 
