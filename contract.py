@@ -19,17 +19,6 @@ class SecondWindow(QWidget):
         # layout
         layout = QVBoxLayout()
         
-        '''
-        btnCreate = QPushButton("Criar Contrato", self)
-        btnCreate.setGeometry(100, 50, 150, 150)
-
-        btnEdit = QPushButton("Editar Contrato", self)
-        btnEdit.setGeometry(400, 50, 150, 150)
-
-        btnExit = QPushButton("Sair da Janela", self)
-        btnExit.setGeometry(100, 250, 150, 150)
-        btnExit.clicked.connect(self.exitWindow)
-        '''
         btnCreate = QPushButton("Criar Contrato")
         btnEdit = QPushButton("Editar Contrato")
         btnExit = QPushButton("Sair da Janela")

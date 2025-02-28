@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QPushButton
+from PyQt6.QtWidgets import (QWidget, QLabel, QPushButton, QVBoxLayout, QMessageBox, QFormLayout, QLineEdit)
 
 class ThirdWindow(QWidget):
     def __init__(self):
@@ -14,15 +14,83 @@ class ThirdWindow(QWidget):
         # window title
         self.setWindowTitle("Clientes")
 
-        btnAdd = QPushButton("Adicionar Cliente", self)
-        btnAdd.setGeometry(100, 50, 150, 150)
+        # layout
+        layout = QVBoxLayout()
 
-        btnEdit = QPushButton("Editar Cliente", self)
-        btnEdit.setGeometry(400, 50, 150, 150)
+        btnAdd = QPushButton("Adicionar Cliente")
+        btnEdit = QPushButton("Editar Cliente")
+        btnExit = QPushButton("Sair da Janela")
 
-        btnExit = QPushButton("Sair da Janela", self)
-        btnExit.setGeometry(100, 250, 150, 150)
-        btnExit.clicked.connect(self.exitWindow)
+        layout.addWidget(btnAdd)
+        layout.addWidget(btnEdit)
+        layout.addWidget(btnExit)
+
+        btnAdd.clicked.connect(self.addClient)
+        btnEdit.clicked.connect(self.editClient)
+        btnExit.clicked.connect(self.close)
+
+        self.setLayout(layout)
     
-    def exitWindow(self):
-        self.close()
+    def addClient(self):
+        # Abrir janela para adicionar cliente
+        self.client_window = AddClientWindow()
+        self.client_window.show()
+
+    def editClient(self):
+        # Abrir janela para editar cliente (implementar lógica)
+        QMessageBox.information(self, "Editar Cliente", "Funcionalidade em desenvolvimento.")
+
+class AddClientWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        # Configurações da janela
+        self.setWindowTitle("Adicionar Cliente")
+        self.setFixedSize(400, 500)
+
+        # Layout
+        layout = QFormLayout()
+
+        # Nome
+        self.txtName = QLineEdit(self)
+        layout.addRow("Nome:", self.txtName)
+
+        # CNPJ
+        self.txtCNPJ = QLineEdit(self)
+        layout.addRow("CNPJ:", self.txtCNPJ)
+
+        # Endereço
+        self.txtAddress = QLineEdit(self)
+        layout.addRow("Endereço:", self.txtAddress)
+
+        # Cidade
+        self.txtCity = QLineEdit(self)
+        layout.addRow("Cidade:", self.txtCity)
+
+        # UF
+        self.txtState = QLineEdit(self)
+        layout.addRow("UF:", self.txtState)
+
+        # CEP
+        self.txtCEP = QLineEdit(self)
+        layout.addRow("CEP:", self.txtCEP)
+
+        # Banco
+        self.txtBank = QLineEdit(self)
+        layout.addRow("Banco:", self.txtBank)
+
+        # Agência
+        self.txtAgency = QLineEdit(self)
+        layout.addRow("Agência:", self.txtAgency)
+
+        # Conta
+        self.txtAccount = QLineEdit(self)
+        layout.addRow("Conta:", self.txtAccount)
+
+        # Botão para salvar cliente
+        btnSave = QPushButton("Salvar Cliente", self)
+        #btnSave.clicked.connect(self.saveClient)
+        layout.addRow(btnSave)
+
+        # Definir layout
+        self.setLayout(layout)
