@@ -11,8 +11,9 @@ def create_clients_db():
     conn = sqlite3.connect('clients.db')
     cursor = conn.cursor()
 
-    # Verificar se a tabela de clientes já existe
-    if not table_exists(cursor, 'clients'):
+    # Verificar se a tabela já existe
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='clients'")
+    if not cursor.fetchone():
         # Criar tabela de clientes
         cursor.execute('''
         CREATE TABLE clients (

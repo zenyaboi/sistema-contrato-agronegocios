@@ -1,4 +1,13 @@
 from PyQt6.QtWidgets import (QWidget, QLabel, QPushButton, QVBoxLayout, QMessageBox, QFormLayout, QLineEdit)
+import sqlite3
+from database import create_clients_db
+import os
+
+if not os.path.exists('clients.db'):
+    print("Banco de dados 'clients.db' não encontrado. Criando...")
+    create_clients_db()
+else:
+    print("Banco de dados 'clients.db' já existe. Verificando tabelas...")
 
 class ThirdWindow(QWidget):
     def __init__(self):
@@ -89,8 +98,62 @@ class AddClientWindow(QWidget):
 
         # Botão para salvar cliente
         btnSave = QPushButton("Salvar Cliente", self)
-        #btnSave.clicked.connect(self.saveClient)
+        btnSave.clicked.connect(self.saveClient)
         layout.addRow(btnSave)
 
         # Definir layout
         self.setLayout(layout)
+    
+    def saveClient(self):
+        # Obter dados do formulário
+        client_data = {
+            "name": self.txtName.text(),
+            "cnpj": self.txtCNPJ.text(),
+            "address": self.txtAddress.text(),
+            "city": self.txtCity.text(),
+            "state": self.txtState.text(),
+            "cep": self.txtCEP.text(),
+            "bank": self.txtBank.text(),
+            "agency": self.txtAgency.text(),
+            "account": self.txtAccount.text()
+        }
+
+        # Validar campos obrigatórios
+        if not client_data["name"] or not client_data["cnpj"]:
+            QMessageBox.warning(self, "Erro", "Preencha todos os campos obrigatórios.")
+            return
+
+        # Inserir cliente no banco de dados
+        try:
+            conn = sqlite3.connect('clients.db')
+            cursor = conn.cursor()
+
+            # Verificar se a tabela existe (opcional, já que a criação é garantida no início)
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='clients'")
+            if not cursor.fetchone():
+                QMessageBox.critical(self, "Erro", "A tabela 'clients' não existe no banco de dados.")
+                return
+
+            # Inserir cliente
+            cursor.execute('''
+            INSERT INTO clients (name, cnpj, address, city, state, cep, bank, agency, account)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                client_data["name"],
+                client_data["cnpj"],
+                client_data["address"],
+                client_data["city"],
+                client_data["state"],
+                client_data["cep"],
+                client_data["bank"],
+                client_data["agency"],
+                client_data["account"]
+            ))
+            conn.commit()
+            conn.close()
+
+            # Mensagem de sucesso
+            QMessageBox.information(self, "Sucesso", f"Cliente {client_data['name']} salvo com sucesso.")
+            self.close()
+        except sqlite3.Error as e:
+            QMessageBox.critical(self, "Erro", f"Erro ao salvar cliente: {e}")
