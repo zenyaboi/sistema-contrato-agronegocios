@@ -1,6 +1,16 @@
 from PyQt6.QtWidgets import (QWidget, QLabel, QPushButton, QVBoxLayout, QMessageBox, QLineEdit, 
                              QComboBox, QTableWidget, QHBoxLayout, QFormLayout, QTextEdit, QStackedWidget)
 from pdf import createPDF
+import sqlite3
+from database import create_contracts_db
+import os
+
+if not os.path.exists('contracts.db'):
+    print("Banco de dados 'contracts.db' não encontrado. Criando...")
+    create_contracts_db()
+else:
+    print("Banco de dados 'contracts.db' já existe. Verificando tabelas...")
+    create_contracts_db()
 
 class SecondWindow(QWidget):
     def __init__(self):
@@ -87,7 +97,7 @@ class ContractWindow(QWidget):
 
         # Botão para salvar contrato
         btnSave = QPushButton("Salvar Contrato", self)
-        #btnSave.clicked.connect(self.saveContract)
+        btnSave.clicked.connect(self.saveContract)
         layout.addWidget(btnSave)
 
         # Definir layout
@@ -118,12 +128,12 @@ class ContractWindow(QWidget):
 
         # Vendedor
         self.cmbSeller = QComboBox(page)
-        #self.loadClients(self.cmbSeller, "Vendedor")
+        self.loadClients(self.cmbSeller)
         layout.addRow("Vendedor:", self.cmbSeller)
 
         # Comprador
         self.cmbBuyer = QComboBox(page)
-        #self.loadClients(self.cmbBuyer, "Comprador")
+        self.loadClients(self.cmbBuyer)
         layout.addRow("Comprador:", self.cmbBuyer)
 
         page.setLayout(layout)
@@ -242,14 +252,25 @@ class ContractWindow(QWidget):
         page.setLayout(layout)
         return page
 
-    """
-    def loadClients(self, combo_box, client_type):
-        # Carregar clientes da lista em memória
-        combo_box.clear()
-        for client in clients:
-            if client["type"] == client_type:
-                combo_box.addItem(client["name"])
-    """
+    def loadClients(self, combo_box):
+    # Carregar todos os clientes do banco de dados
+        try:
+            conn = sqlite3.connect('clients.db')
+            cursor = conn.cursor()
+            cursor.execute('SELECT id, name FROM clients')  # Removido o filtro por tipo
+            clients = cursor.fetchall()
+            conn.close()
+
+            # Adicionar item vazio no início
+            combo_box.clear()
+            combo_box.addItem("", None)
+
+            # Adicionar clientes ao combobox
+            for client in clients:
+                combo_box.addItem(client[1], client[0])  # Nome do cliente e ID
+        except sqlite3.Error as e:
+            QMessageBox.critical(self, "Erro", f"Erro ao carregar clientes: {e}")
+
     def previousPage(self):
         # Navegar para a página anterior
         current_index = self.stackedWidget.currentIndex()
@@ -261,3 +282,87 @@ class ContractWindow(QWidget):
         current_index = self.stackedWidget.currentIndex()
         if current_index < self.stackedWidget.count() - 1:
             self.stackedWidget.setCurrentIndex(current_index + 1)
+
+    def saveContract(self):
+        # Verificar se vendedor e comprador foram selecionados
+        if not self.cmbSeller.currentData():
+            QMessageBox.warning(self, "Erro", "Selecione um vendedor.")
+            return
+        if not self.cmbBuyer.currentData():
+            QMessageBox.warning(self, "Erro", "Selecione um comprador.")
+            return
+
+        # Obter dados do formulário
+        contract_data = {
+            "contract_number": self.txtContractNumber.text(),
+            "contract_type": self.cmbType.currentText(),
+            "contract_date": self.txtDate.text(),
+            "seller_id": self.cmbSeller.currentData(),  # ID do vendedor
+            "buyer_id": self.cmbBuyer.currentData(),    # ID do comprador
+            "product": self.txtProduct.text(),
+            "harvest": self.txtHarvest.text(),
+            "quantity": self.txtQuantity.text(),
+            "price": self.txtPrice.text(),
+            "payment": self.txtPayment.text(),
+            "weight_quality": self.txtWeightQuality.text(),
+            "delivery": self.txtDelivery.text(),
+            "observations": self.txtObservations.toPlainText(),
+            "additional_fields": {}
+        }
+
+        # Coletar campos específicos da Página 3
+        for i in range(self.dynamicLayout.rowCount()):
+            label = self.dynamicLayout.itemAt(i, QFormLayout.ItemRole.LabelRole)
+            field = self.dynamicLayout.itemAt(i, QFormLayout.ItemRole.FieldRole)
+            if label and field:
+                field_name = label.widget().text().replace(":", "")
+                field_value = field.widget().text()
+                contract_data["additional_fields"][field_name] = field_value
+
+        # Verificar se os campos obrigatórios estão preenchidos
+        if not contract_data["contract_number"] or not contract_data["contract_date"]:
+            QMessageBox.warning(self, "Erro", "Preencha todos os campos obrigatórios.")
+            return
+
+        # Salvar contrato no banco de dados
+        try:
+            conn = sqlite3.connect('contracts.db')
+            cursor = conn.cursor()
+
+            # Verificar se a tabela existe (opcional, já que a criação é garantida no início)
+            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='contracts'")
+            if not cursor.fetchone():
+                QMessageBox.critical(self, "Erro", "A tabela 'contracts' não existe no banco de dados.")
+                return
+
+            # Inserir contrato
+            cursor.execute('''
+            INSERT INTO contracts (
+                contract_number, contract_type, contract_date, seller_id, buyer_id,
+                product, harvest, quantity, price, payment, weight_quality, delivery, observations
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (
+                contract_data["contract_number"],
+                contract_data["contract_type"],
+                contract_data["contract_date"],
+                contract_data["seller_id"],
+                contract_data["buyer_id"],
+                contract_data["product"],
+                contract_data["harvest"],
+                contract_data["quantity"],
+                contract_data["price"],
+                contract_data["payment"],
+                contract_data["weight_quality"],
+                contract_data["delivery"],
+                contract_data["observations"]
+            ))
+            conn.commit()
+            conn.close()
+
+            # Gerar PDF do contrato
+            #createPDF(contract_data)
+            QMessageBox.information(self, "Sucesso", "Contrato salvo e PDF gerado com sucesso!")
+            self.close()
+        except sqlite3.Error as e:
+            QMessageBox.critical(self, "Erro", f"Erro ao salvar contrato: {e}")
