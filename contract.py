@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QLabel, QPushButton
+from PyQt6.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QMessageBox
 from pdf import createPDF
 
 class SecondWindow(QWidget):
@@ -15,6 +15,10 @@ class SecondWindow(QWidget):
         # window title
         self.setWindowTitle("Contratos")
 
+        # layout
+        layout = QVBoxLayout()
+        
+        '''
         btnCreate = QPushButton("Criar Contrato", self)
         btnCreate.setGeometry(100, 50, 150, 150)
 
@@ -24,6 +28,35 @@ class SecondWindow(QWidget):
         btnExit = QPushButton("Sair da Janela", self)
         btnExit.setGeometry(100, 250, 150, 150)
         btnExit.clicked.connect(self.exitWindow)
+        '''
+        btnCreate = QPushButton("Criar Contrato")
+        btnEdit = QPushButton("Editar Contrato")
+        btnExit = QPushButton("Sair da Janela")
+
+        layout.addWidget(btnCreate)
+        layout.addWidget(btnEdit)
+        layout.addWidget(btnExit)
+
+        btnCreate.clicked.connect(self.createContract)
+        btnEdit.clicked.connect(self.editContract)
+        btnExit.clicked.connect(self.close)
+
+        self.setLayout(layout)
     
-    def exitWindow(self):
-        self.close()
+    def createContract(self):
+        self.contract_window = ContractWindow()
+        self.contract_window.show()
+
+    def editContract(self):
+        QMessageBox.information(self, "Editar Contrato", "Funcionalidade em desenvolvimento.")
+
+class ContractWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("Criar Contrato")
+        self.setFixedSize(800, 600)
+
+        layout = QVBoxLayout()
+
+        self.setLayout(layout)
