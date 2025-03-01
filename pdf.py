@@ -21,17 +21,7 @@ def add_overlay_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold", 
     # Desenha o texto no canvas
     canvas.drawText(text_object)
 
-def createPDF(filename):
-    # Background images path
-    image_page1 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0001.jpg"
-    image_page2 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0002.jpg"
-    image_page3 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0003.jpg"
-
-    # Create a PDF using canvas
-    c = canvas.Canvas(filename, pagesize=A4)
-
-    # Page 1
-    add_background(c, image_page1)
+def sb_co_text(c):
     # contract info
     add_overlay_text(c, 130, 651, "000/SB/0000", 10)
     add_overlay_text(c, 324, 651, "00 de Fevereiro de 0000", 10)
@@ -53,9 +43,62 @@ def createPDF(filename):
     add_overlay_text(c, 289, 438, "TT", 10)
     add_overlay_text(c, 160, 420, "BRASIL TESTE", 10)
     add_overlay_text(c, 300, 420, "00.000-000", 10)
-    # product info
+    # product info (SB/CO)
+    """
     add_overlay_text(c, 40, 342, "TESTE TESTE TESTE\nTESTE TESTE TESTE", 8)
+    add_overlay_text(c, 150, 348, "2020", 8)
+    add_overlay_text(c, 223, 348, "0", 8)
+    add_overlay_text(c, 285, 348, "0", 8)
+    add_overlay_text(c, 372, 348, "0", 8)
+    """
 
+def wh_text(c):
+    # contract info
+    add_overlay_text(c, 130, 651, "000/SB/0000", 10)
+    add_overlay_text(c, 324, 651, "00 de Fevereiro de 0000", 10)
+    # seller info
+    add_overlay_text(c, 110, 615, "TESTE TESTE TESTE TESTE TESTE!", 12)
+    add_overlay_text(c, 138, 597, "12.123.123/0001-23", 10)
+    add_overlay_text(c, 280, 597, "TESTE TESTE TESTE!", 10)
+    add_overlay_text(c, 155, 579, "RUA TESTE TESTE TESTE TESTE TESTE, 202, NUMERO CASA TERREO AP RODOVIA", 10)
+    add_overlay_text(c, 145, 562, "TESTE TESTE", 10)
+    add_overlay_text(c, 292, 562, "TT", 10)
+    add_overlay_text(c, 140, 543, "BRASIL TESTE", 10)
+    add_overlay_text(c, 300, 543, "00.000-000", 10)
+    # buyer info
+    add_overlay_text(c, 120, 496, "TESTE TESTE TESTE TESTE TESTE!", 12)
+    add_overlay_text(c, 160, 474, "12.123.123/0001-23", 10)
+    add_overlay_text(c, 290, 474, "TESTE TESTE TESTE!", 10)
+    add_overlay_text(c, 174, 455, "RUA TESTE TESTE TESTE TESTE TESTE, 202, NUMERO CASA TERREO AP RODOVIA", 10)
+    add_overlay_text(c, 165, 438, "TESTE TESTE", 10)
+    add_overlay_text(c, 289, 438, "TT", 10)
+    add_overlay_text(c, 160, 420, "BRASIL TESTE", 10)
+    add_overlay_text(c, 300, 420, "00.000-000", 10)
+    # product info (WH)
+    """
+    add_overlay_text(c, 40, 342, "TESTE TESTE TESTE\nTESTE TESTE TESTE", 8)
+    add_overlay_text(c, 150, 348, "2020", 8)
+    add_overlay_text(c, 223, 348, "0", 8)
+    add_overlay_text(c, 285, 348, "0", 8)
+    add_overlay_text(c, 372, 348, "0", 8)
+    """
+
+def createPDF(filename):
+    # Background images path
+    #image_page1 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0001.jpg"
+    image_page1 = "CTRVend361WH2025-STRAL GRÃOS  LTDA x MOINHO CIDADE BELLA LTDA_page-0001.jpg"
+    image_page2 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0002.jpg"
+    image_page3 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0003.jpg"
+
+    # Create a PDF using canvas
+    c = canvas.Canvas(filename, pagesize=A4)
+
+    # Page 1
+    add_background(c, image_page1)
+
+    #sb_co_text(c)
+    wh_text(c)
+    
     c.showPage()  # Finalize the current page and start a new one
 
     # Page 2
