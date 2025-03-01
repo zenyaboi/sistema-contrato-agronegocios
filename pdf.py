@@ -4,10 +4,22 @@ from reportlab.pdfgen import canvas
 def add_background(canvas, image_path):
     canvas.drawImage(image_path, 0, 0, width=595, height=842)
 
-def add_overlay_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold"):
-    canvas.setFont(font_name, font_size)
-    canvas.setFillColorRGB(0, 0, 0)
-    canvas.drawString(x, y, text)
+def add_overlay_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold", line_height=17):
+    # Cria um objeto de texto
+    text_object = canvas.beginText(x, y)
+    text_object.setFont(font_name, font_size)
+    text_object.setFillColorRGB(0, 0, 0)
+
+    # Divide o texto em linhas
+    lines = text.split("\n")  # Quebra o texto em linhas manualmente
+
+    # Adiciona cada linha ao TextObject
+    for line in lines:
+        text_object.textLine(line)  # Adiciona uma linha e move para a próxima
+        text_object.moveCursor(0, -line_height)  # Ajusta o espaçamento entre linhas
+
+    # Desenha o texto no canvas
+    canvas.drawText(text_object)
 
 def createPDF(filename):
     # Background images path
@@ -41,6 +53,8 @@ def createPDF(filename):
     add_overlay_text(c, 289, 438, "TT", 10)
     add_overlay_text(c, 160, 420, "BRASIL TESTE", 10)
     add_overlay_text(c, 300, 420, "00.000-000", 10)
+    # product info
+    add_overlay_text(c, 40, 342, "TESTE TESTE TESTE\nTESTE TESTE TESTE", 8)
 
     c.showPage()  # Finalize the current page and start a new one
 
