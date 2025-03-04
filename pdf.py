@@ -49,6 +49,7 @@ def sb_co_text(c):
     add_overlay_text(c, 223, 348, "0", 8)
     add_overlay_text(c, 285, 348, "0", 8)
     add_overlay_text(c, 372, 348, "0", 8)
+    add_overlay_text(c, 151, 250, "0000 TONELADAS MÉTRICAS", 9)
 
 def wh_text(c):
     # contract info
@@ -82,6 +83,7 @@ def wh_text(c):
     add_overlay_text(c, 419, 379, "0", 8)
     add_overlay_text(c, 474, 379, "00", 8)
     add_overlay_text(c, 528, 379, "0000", 8)
+    add_overlay_text(c, 151, 325, "0000 TONELADAS MÉTRICAS", 9)
 
 def createPDF(filename):
     # Background images path
