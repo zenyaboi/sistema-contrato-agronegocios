@@ -50,6 +50,10 @@ def sb_co_text(c):
     add_overlay_text(c, 285, 348, "0", 8)
     add_overlay_text(c, 372, 348, "0", 8)
     add_overlay_text(c, 151, 250, "0000 TONELADAS MÉTRICAS", 9)
+    add_overlay_text(c, 151, 240, "R$ 0000,00/SC. 60KG", 9)
+    add_overlay_text(c, 151, 228, "00/00/0000", 9)
+    add_overlay_text(c, 151, 218, "TESTE TESTE TESTE TESTE TESTE", 9)
+    add_overlay_text(c, 151, 206, "TESTE TESTE TESTE TESTE TESTE", 9)
 
 def wh_text(c):
     # contract info
@@ -84,13 +88,17 @@ def wh_text(c):
     add_overlay_text(c, 474, 379, "00", 8)
     add_overlay_text(c, 528, 379, "0000", 8)
     add_overlay_text(c, 151, 325, "0000 TONELADAS MÉTRICAS", 9)
+    add_overlay_text(c, 151, 315, "R$ 0000,00/TONELADA MÉTRICA", 9)
+    add_overlay_text(c, 151, 302, "00/00/0000", 9)
+    add_overlay_text(c, 151, 291, "TESTE TESTE TESTE TESTE TESTE", 9)
+    add_overlay_text(c, 151, 279, "TESTE TESTE TESTE TESTE TESTE", 9)
 
 def createPDF(filename):
     # Background images path
-    #image_page1 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0001.jpg"
-    image_page1 = "CTRVend361WH2025-STRAL GRÃOS  LTDA x MOINHO CIDADE BELLA LTDA_page-0001.jpg"
-    image_page2 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0002.jpg"
-    image_page3 = "CTRVend379SB2025-AGRÍCOLA GEMELLIx COFCO BRASIL SA_pages-to-jpg-0003.jpg"
+    image_page1 = "CTRVend_393SB2025-PRODUCERTA CEREAIS PITANGA LTDAxSEMEGRÃO COMERCIAL AGRÍCOLA LTDA_page-0001.jpg"
+    #image_page1 = "CTRVend361WH2025-STRAL GRÃOS  LTDA x MOINHO CIDADE BELLA LTDA_page-0001.jpg"
+    image_page2 = "CTRVend_393SB2025-PRODUCERTA CEREAIS PITANGA LTDAxSEMEGRÃO COMERCIAL AGRÍCOLA LTDA_page-0002.jpg"
+    image_page3 = "CTRVend_393SB2025-PRODUCERTA CEREAIS PITANGA LTDAxSEMEGRÃO COMERCIAL AGRÍCOLA LTDA_page-0003.jpg"
 
     # Create a PDF using canvas
     c = canvas.Canvas(filename, pagesize=A4)
@@ -98,8 +106,8 @@ def createPDF(filename):
     # Page 1
     add_background(c, image_page1)
 
-    #sb_co_text(c)
-    wh_text(c)
+    sb_co_text(c)
+    #wh_text(c)
     
     c.showPage()  # Finalize the current page and start a new one
 
