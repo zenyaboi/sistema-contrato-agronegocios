@@ -1,5 +1,8 @@
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
 
 def add_background(canvas, image_path):
     canvas.drawImage(image_path, 0, 0, width=595, height=842)
@@ -20,6 +23,40 @@ def add_overlay_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold", 
 
     # Desenha o texto no canvas
     canvas.drawText(text_object)
+
+def add_wrapped_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold", 
+                    max_width=100, line_height=12):
+    try:
+        # Configurações iniciais
+        canvas.setFont(font_name, font_size)
+        text_object = canvas.beginText(x, y)
+        
+        words = text.split()
+        current_line = []
+        current_width = 0
+        
+        for word in words:
+            word_width = canvas.stringWidth(word + ' ', font_name, font_size)
+            if current_width + word_width <= max_width:
+                current_line.append(word)
+                current_width += word_width
+            else:
+                # Desenha a linha atual e reinicia
+                text_object.textLine(' '.join(current_line))
+                text_object.moveCursor(0, -line_height)
+                current_line = [word]
+                current_width = word_width
+        
+        # Desenha a última linha
+        if current_line:
+            text_object.textLine(' '.join(current_line))
+        
+        canvas.drawText(text_object)
+    except Exception as e:
+        print(f"Erro ao renderizar texto: {e}")
+        # Fallback: desenha o texto em uma linha só
+        canvas.setFont(font_name, font_size)
+        canvas.drawString(x, y, text[:50] + "...")
 
 def info_text(c):
     # contract info
@@ -45,6 +82,10 @@ def info_text(c):
     add_overlay_text(c, 300, 420, "00.000-000", 10)
 
 def sb_co_text(c):
+    # PRODUTO com quebra automática segura
+    add_wrapped_text(c, 40, 792, "TESTE TESTE TESTE TESTE TESTE TESTE", 8, max_width=100, line_height=1)
+
+    '''
     # product info (SB/CO)
     add_overlay_text(c, 40, 342, "TESTE TESTE TESTE\nTESTE TESTE TESTE", 8)
     add_overlay_text(c, 150, 348, "2020", 8)
@@ -55,7 +96,8 @@ def sb_co_text(c):
     add_overlay_text(c, 151, 240, "R$ 0000,00/SC. 60KG", 9)
     add_overlay_text(c, 151, 228, "00/00/0000", 9)
     add_overlay_text(c, 151, 218, "TESTE TESTE TESTE TESTE TESTE", 9)
-    add_overlay_text(c, 151, 206, "TESTE TESTE TESTE TESTE TESTE", 9)
+    add_overlay_text(c, 151, 206, "TESTE TESTE TESTE TESTE TESTE", 9)'
+    '''
 
 def wh_text(c):
     # product info (WH)
