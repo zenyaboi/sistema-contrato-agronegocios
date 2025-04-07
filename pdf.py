@@ -60,44 +60,40 @@ def add_wrapped_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold",
 
 def info_text(c):
     # contract info
-    add_overlay_text(c, 130, 651, "000/SB/0000", 10)
-    add_overlay_text(c, 324, 651, "00 de Fevereiro de 0000", 10)
+    add_overlay_text(c, 130, 648, "000/SB/0000", 10)
+    add_overlay_text(c, 325, 648, "00 de Fevereiro de 0000", 10)
     # seller info
-    add_overlay_text(c, 110, 615, "TESTE TESTE TESTE TESTE TESTE!", 10)
-    add_overlay_text(c, 138, 597, "12.123.123/0001-23", 10)
-    add_overlay_text(c, 280, 597, "12300012-31", 10)
-    add_overlay_text(c, 155, 579, "RUA TESTE TESTE TESTE TESTE TESTE, 202, NUMERO CASA TERREO AP RODOVIA", 10)
-    add_overlay_text(c, 145, 562, "TESTE TESTE", 10)
-    add_overlay_text(c, 292, 562, "TT", 10)
-    add_overlay_text(c, 140, 543, "BRASIL TESTE", 10)
-    add_overlay_text(c, 300, 543, "00.000-000", 10)
+    add_overlay_text(c, 115, 613, "TESTE TESTE TESTE TESTE TESTE!", 10)
+    add_overlay_text(c, 155, 595, "12.123.123/0001-23", 10)
+    add_overlay_text(c, 333, 595, "12300012-31", 10)
+    add_overlay_text(c, 170, 577, "RUA TESTE TESTE TESTE TESTE TESTE, 202, NUMERO CASA TERREO AP RODOVIA", 10)
+    add_overlay_text(c, 158, 559, "TESTE TESTE", 10)
+    add_overlay_text(c, 336, 559, "TT", 10)
+    add_overlay_text(c, 145, 541, "BRASIL TESTE", 10)
+    add_overlay_text(c, 345, 541, "00.000-000", 10)
     # buyer info
-    add_overlay_text(c, 120, 496, "TESTE TESTE TESTE TESTE TESTE!", 10)
-    add_overlay_text(c, 160, 474, "12.123.123/0001-23", 10)
-    add_overlay_text(c, 290, 474, "12300012-31", 10)
-    add_overlay_text(c, 174, 455, "RUA TESTE TESTE TESTE TESTE TESTE, 202, NUMERO CASA TERREO AP RODOVIA", 10)
-    add_overlay_text(c, 165, 438, "TESTE TESTE", 10)
-    add_overlay_text(c, 289, 438, "TT", 10)
-    add_overlay_text(c, 160, 420, "BRASIL TESTE", 10)
-    add_overlay_text(c, 300, 420, "00.000-000", 10)
+    add_overlay_text(c, 125, 502, "TESTE TESTE TESTE TESTE TESTE!", 10)
+    add_overlay_text(c, 160, 487, "12.123.123/0001-23", 10)
+    add_overlay_text(c, 338, 487, "12300012-31", 10)
+    add_overlay_text(c, 174, 469, "RUA TESTE TESTE TESTE TESTE TESTE, 202, NUMERO CASA TERREO AP RODOVIA", 10)
+    add_overlay_text(c, 165, 452, "TESTE TESTE", 10)
+    add_overlay_text(c, 335, 452, "TT", 10)
+    add_overlay_text(c, 160, 434, "BRASIL TESTE", 10)
+    add_overlay_text(c, 343, 434, "00.000-000", 10)
 
 def sb_co_text(c):
-    # PRODUTO com quebra automática segura
-    add_wrapped_text(c, 40, 792, "TESTE TESTE TESTE TESTE TESTE TESTE", 8, max_width=100, line_height=1)
-
-    '''
     # product info (SB/CO)
-    add_overlay_text(c, 40, 342, "TESTE TESTE TESTE\nTESTE TESTE TESTE", 8)
-    add_overlay_text(c, 150, 348, "2020", 8)
-    add_overlay_text(c, 223, 348, "0", 8)
-    add_overlay_text(c, 285, 348, "0", 8)
-    add_overlay_text(c, 372, 348, "0", 8)
-    add_overlay_text(c, 151, 250, "0000 TONELADAS MÉTRICAS", 9)
-    add_overlay_text(c, 151, 240, "R$ 0000,00/SC. 60KG", 9)
-    add_overlay_text(c, 151, 228, "00/00/0000", 9)
-    add_overlay_text(c, 151, 218, "TESTE TESTE TESTE TESTE TESTE", 9)
-    add_overlay_text(c, 151, 206, "TESTE TESTE TESTE TESTE TESTE", 9)'
-    '''
+    add_wrapped_text(c, 40, 792, "TESTE TESTE TESTE TESTE TESTE TESTE", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 155, 791, "9999", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 225, 791, "99", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 285, 791, "99%", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 359, 791, "9", 8, max_width=100, line_height=1)
+
+    add_wrapped_text(c, 150, 556, "0000 TONELADAS MÉTRICAS", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 544, "R$ 0000,00/SC. 60KG", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 532, "00/00/0000", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 521, "TESTE TESTE TESTE TESTE TESTE", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 509, "TESTE TESTE TESTE TESTE TESTE", 9, max_width=200, line_height=1)
 
 def wh_text(c):
     # product info (WH)
