@@ -27,36 +27,37 @@ def add_overlay_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold", 
 def add_wrapped_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold", 
                     max_width=100, line_height=12):
     try:
-        # Configurações iniciais
         canvas.setFont(font_name, font_size)
-        text_object = canvas.beginText(x, y)
-        
         words = text.split()
-        current_line = []
-        current_width = 0
+        lines = []
+        current_line = ""
         
         for word in words:
-            word_width = canvas.stringWidth(word + ' ', font_name, font_size)
-            if current_width + word_width <= max_width:
-                current_line.append(word)
-                current_width += word_width
+            test_line = current_line + " " + word if current_line else word
+            test_width = canvas.stringWidth(test_line, font_name, font_size)
+            
+            if test_width <= max_width:
+                current_line = test_line
             else:
-                # Desenha a linha atual e reinicia
-                text_object.textLine(' '.join(current_line))
-                text_object.moveCursor(0, -line_height)
-                current_line = [word]
-                current_width = word_width
+                lines.append(current_line)
+                current_line = word
         
-        # Desenha a última linha
         if current_line:
-            text_object.textLine(' '.join(current_line))
-        
+            lines.append(current_line)
+
+        text_object = canvas.beginText(x, y)
+        text_object.setFont(font_name, font_size)
+        for line in lines:
+            text_object.textLine(line)
+
         canvas.drawText(text_object)
+        return len(lines) * line_height
+
     except Exception as e:
         print(f"Erro ao renderizar texto: {e}")
-        # Fallback: desenha o texto em uma linha só
         canvas.setFont(font_name, font_size)
         canvas.drawString(x, y, text[:50] + "...")
+        return line_height
 
 def info_text(c):
     # contract info
@@ -120,10 +121,11 @@ def additional_text(c):
     add_wrapped_text(c, 285, 678, "99%", 8, max_width=100, line_height=1)
     add_wrapped_text(c, 359, 678, "9", 8, max_width=100, line_height=1)
 
-def obs_text(c, count):
-    for number in range(count):
-        print(number)
-        add_wrapped_text(c, 27, 454 - number * 20, "TESTE TESTE TESTE TESTE TESTE TESTE TESTE", 10, max_width=550, line_height=1)
+def obs_text(c, obs_list):
+    y = 454
+    for obs in obs_list:
+        used_height = add_wrapped_text(c, 27, y, obs, 10, max_width=550, line_height=12)
+        y -= used_height + 5
 
 def createPDF(filename):
     # Background images path
@@ -151,7 +153,15 @@ def createPDF(filename):
     sb_co_text(c)
     #wh_text(c)
     additional_text(c)
-    obs_text(c, 10)
+
+    observacoes = [
+        "Observação curta.",
+        "Observação bem mais longa que provavelmente vai ocupar mais de uma linha dependendo da largura da caixa.",
+        "Outra observação compacta.",
+        "Uma ainda mais longa para testar se o recuo vertical funciona corretamente ao empilhar vários blocos de texto grandes.",
+    ]
+    
+    obs_text(c, observacoes)  # Agora com posicionamento dinâmico
 
     c.showPage()
 
