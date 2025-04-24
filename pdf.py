@@ -112,6 +112,19 @@ def wh_text(c):
     add_overlay_text(c, 151, 291, "TESTE TESTE TESTE TESTE TESTE", 9)
     add_overlay_text(c, 151, 279, "TESTE TESTE TESTE TESTE TESTE", 9)
 
+def additional_text(c):
+    # product info
+    add_wrapped_text(c, 40, 679, "TESTE TESTE TESTE TESTE TESTE TESTE", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 155, 678, "9999", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 225, 678, "99", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 285, 678, "99%", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 359, 678, "9", 8, max_width=100, line_height=1)
+
+def obs_text(c, count):
+    for number in range(count):
+        print(number)
+        add_wrapped_text(c, 27, 454 - number * 20, "TESTE TESTE TESTE TESTE TESTE TESTE TESTE", 10, max_width=550, line_height=1)
+
 def createPDF(filename):
     # Background images path
     # SB/CO model
@@ -137,6 +150,8 @@ def createPDF(filename):
 
     sb_co_text(c)
     #wh_text(c)
+    additional_text(c)
+    obs_text(c, 10)
 
     c.showPage()
 
