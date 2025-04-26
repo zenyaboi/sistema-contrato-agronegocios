@@ -3,7 +3,6 @@ from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
-
 def add_background(canvas, image_path):
     canvas.drawImage(image_path, 0, 0, width=595, height=842)
 
@@ -127,6 +126,16 @@ def obs_text(c, obs_list):
         used_height = add_wrapped_text(c, 27, y, obs, 10, max_width=550, line_height=12)
         y -= used_height + 5
 
+def payment_info_text(c):
+    add_wrapped_text(c, 138, 692, "BANCO: TESTE TESTE TESTE TESTE", 7, max_width=200, line_height=1)
+    add_wrapped_text(c, 308, 692, "0000-0", 7, max_width=100, line_height=1)
+    add_wrapped_text(c, 408, 692, "000000-0", 7, max_width=100, line_height=1)
+    add_wrapped_text(c, 138, 679, "TESTE TESTE TESTE TESTE TESTE TESTE", 7, max_width=100, line_height=1)
+    add_wrapped_text(c, 298, 679, "12.123.123/0001-23", 7, max_width=100, line_height=1)
+    add_wrapped_text(c, 138, 658, "CIF TESTE TESTE TESTE TESTE", 7, max_width=150, line_height=1)
+    add_wrapped_text(c, 290, 658, "TT", 7, max_width=100, line_height=1)
+    add_overlay_text(c, 138, 634, "0,20% TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE", 7)
+
 def createPDF(filename):
     # Background images path
     # SB/CO model
@@ -161,12 +170,15 @@ def createPDF(filename):
         "Uma ainda mais longa para testar se o recuo vertical funciona corretamente ao empilhar vários blocos de texto grandes.",
     ]
     
-    obs_text(c, observacoes)  # Agora com posicionamento dinâmico
+    obs_text(c, observacoes)
 
     c.showPage()
 
     # Page 3
     add_background(c, image_page3)
+
+    payment_info_text(c)
+
     c.showPage()
 
     # Page 4
