@@ -136,6 +136,12 @@ def payment_info_text(c):
     add_wrapped_text(c, 290, 658, "TT", 7, max_width=100, line_height=1)
     add_overlay_text(c, 138, 634, "0,20% TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE", 7)
 
+def signing_text(c):
+    vendedor_height = add_wrapped_text(c, 40, 425, "TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE", 7, max_width=180, line_height=1)
+    add_wrapped_text(c, 81, 425 - vendedor_height * 6 - 5, "12.123.123/0001-23", 7, max_width=200, line_height=1)
+    comprador_height = add_wrapped_text(c, 345, 425, "TESTE TESTE TESTE TESTE TESTE TESTE", 7, max_width=180, line_height=1)
+    add_wrapped_text(c, 400, 425 - comprador_height * 6 - 5, "12.123.123/0001-23", 7, max_width=200, line_height=1)
+
 def createPDF(filename):
     # Background images path
     # SB/CO model
@@ -178,6 +184,7 @@ def createPDF(filename):
     add_background(c, image_page3)
 
     payment_info_text(c)
+    signing_text(c)
 
     c.showPage()
 
