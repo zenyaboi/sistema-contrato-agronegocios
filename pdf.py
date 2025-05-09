@@ -85,7 +85,6 @@ def info_text(c):
 
 def sb_co_text(c):
     # product info (SB/CO)
-    isSb = True
     add_wrapped_text(c, 40, 792, "TESTE TESTE TESTE TESTE TESTE TESTE", 8, max_width=100, line_height=1)
     add_wrapped_text(c, 155, 791, "9999", 8, max_width=100, line_height=1)
     add_wrapped_text(c, 225, 791, "99", 8, max_width=100, line_height=1)
@@ -100,7 +99,6 @@ def sb_co_text(c):
 
 def wh_text(c):
     # product info (WH)
-    isSb = False
     add_wrapped_text(c, 35, 789, "TESTE TESTE TESTE TESTE TESTE TESTE", 8, max_width=100, line_height=1)
     add_wrapped_text(c, 140, 788, "9999", 8, max_width=100, line_height=1)
     add_wrapped_text(c, 194, 788, "99", 8, max_width=100, line_height=1)
