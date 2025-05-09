@@ -3,6 +3,8 @@ from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
+isSb = False
+
 def add_background(canvas, image_path):
     canvas.drawImage(image_path, 0, 0, width=595, height=842)
 
@@ -83,6 +85,7 @@ def info_text(c):
 
 def sb_co_text(c):
     # product info (SB/CO)
+    isSb = True
     add_wrapped_text(c, 40, 792, "TESTE TESTE TESTE TESTE TESTE TESTE", 8, max_width=100, line_height=1)
     add_wrapped_text(c, 155, 791, "9999", 8, max_width=100, line_height=1)
     add_wrapped_text(c, 225, 791, "99", 8, max_width=100, line_height=1)
@@ -97,20 +100,24 @@ def sb_co_text(c):
 
 def wh_text(c):
     # product info (WH)
-    add_overlay_text(c, 40, 372, "TESTE TESTE TESTE\nTESTE TESTE TESTE", 8)
-    add_overlay_text(c, 150, 379, "2020", 8)
-    add_overlay_text(c, 223, 379, "000", 8)
-    add_overlay_text(c, 300, 379, "00", 8)
-    add_overlay_text(c, 339, 379, "000", 8)
-    add_overlay_text(c, 374, 379, "0", 8)
-    add_overlay_text(c, 419, 379, "0", 8)
-    add_overlay_text(c, 474, 379, "00", 8)
-    add_overlay_text(c, 528, 379, "0000", 8)
-    add_overlay_text(c, 151, 325, "0000 TONELADAS MÉTRICAS", 9)
-    add_overlay_text(c, 151, 315, "R$ 0000,00/TONELADA MÉTRICA", 9)
-    add_overlay_text(c, 151, 302, "00/00/0000", 9)
-    add_overlay_text(c, 151, 291, "TESTE TESTE TESTE TESTE TESTE", 9)
-    add_overlay_text(c, 151, 279, "TESTE TESTE TESTE TESTE TESTE", 9)
+    isSb = False
+    add_wrapped_text(c, 35, 789, "TESTE TESTE TESTE TESTE TESTE TESTE", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 140, 788, "9999", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 194, 788, "99", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 250, 788, "99", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 330, 788, "999", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 396, 788, "999", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 440, 788, "9", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 489, 788, "9", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 552, 788, "9,9", 8, max_width=100, line_height=1)
+
+    add_wrapped_text(c, 150, 722, "0000 TONELADAS MÉTRICAS", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 710, "R$ 0000,00/TONELADA MÉTRICA", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 698, "00/00/0000", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 686, "TESTE TESTE TESTE TESTE TESTE", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 674, "TESTE TESTE TESTE TESTE TESTE", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 27, 620, "Trigo isento de insetos vivos e/ou mortos (caso haja incidência, as cargas serão devolvidas, e o vendedor será responsável pelo custo do frete).", 
+                    10, max_width=550, line_height=12)
 
 def additional_text(c):
     # product info
@@ -121,7 +128,10 @@ def additional_text(c):
     add_wrapped_text(c, 359, 678, "9", 8, max_width=100, line_height=1)
 
 def obs_text(c, obs_list):
-    y = 454
+    if (isSb):
+        y = 454
+    else:
+        y = 595
     for obs in obs_list:
         used_height = add_wrapped_text(c, 27, y, obs, 10, max_width=550, line_height=12)
         y -= used_height + 5
@@ -144,11 +154,11 @@ def signing_text(c):
 
 def createPDF(filename):
     # Background images path
-    # SB/CO model
     image_page1 = "CONTRATO MODELO SB & CO_page-0001.jpg"
+    # SB/CO model
+    #image_page2 = "CONTRATO MODELO SB & CO_page-0002.jpg"
     # WH model
-    #image_page1 = "CONTRATO MODELO WH_page-0001.jpg"
-    image_page2 = "CONTRATO MODELO SB & CO_page-0002.jpg"
+    image_page2 = "CONTRATO MODELO WH_page-0002.jpg"
     image_page3 = "CONTRATO MODELO SB & CO_page-0003.jpg"
     image_page4 = "CONTRATO MODELO SB & CO_page-0004.jpg"
 
@@ -165,9 +175,9 @@ def createPDF(filename):
     # Page 2
     add_background(c, image_page2)
 
-    sb_co_text(c)
-    #wh_text(c)
-    additional_text(c)
+    #sb_co_text(c)
+    #additional_text(c)
+    wh_text(c)
 
     observacoes = [
         "Observação curta.",
