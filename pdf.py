@@ -175,9 +175,11 @@ def createPDF(filename):
     # Page 2
     add_background(c, image_page2)
 
-    #sb_co_text(c)
-    #additional_text(c)
-    wh_text(c)
+    if (isSb):
+        sb_co_text(c)
+        additional_text(c)
+    else:
+        wh_text(c)
 
     observacoes = [
         "Observação curta.",
