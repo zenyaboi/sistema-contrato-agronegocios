@@ -297,8 +297,8 @@ class ContractWindow(QWidget):
             "contract_number": self.txtContractNumber.text(),
             "contract_type": self.cmbType.currentText(),
             "contract_date": self.txtDate.text(),
-            "seller_id": self.cmbSeller.currentData(),  # ID do vendedor
-            "buyer_id": self.cmbBuyer.currentData(),    # ID do comprador
+            "seller_id": self.cmbSeller.currentData(),
+            "buyer_id": self.cmbBuyer.currentData(),
             "product": self.txtProduct.text(),
             "harvest": self.txtHarvest.text(),
             "quantity": self.txtQuantity.text(),
@@ -319,7 +319,7 @@ class ContractWindow(QWidget):
                 field_value = field.widget().text()
                 contract_data["additional_fields"][field_name] = field_value
 
-        # Verificar se os campos obrigatórios estão preenchidos
+        # Verificar campos obrigatórios
         if not contract_data["contract_number"] or not contract_data["contract_date"]:
             QMessageBox.warning(self, "Erro", "Preencha todos os campos obrigatórios.")
             return
@@ -329,13 +329,6 @@ class ContractWindow(QWidget):
             conn = sqlite3.connect('contracts.db')
             cursor = conn.cursor()
 
-            # Verificar se a tabela existe (opcional, já que a criação é garantida no início)
-            cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='contracts'")
-            if not cursor.fetchone():
-                QMessageBox.critical(self, "Erro", "A tabela 'contracts' não existe no banco de dados.")
-                return
-
-            # Inserir contrato
             cursor.execute('''
             INSERT INTO contracts (
                 contract_number, contract_type, contract_date, seller_id, buyer_id,
@@ -361,8 +354,12 @@ class ContractWindow(QWidget):
             conn.close()
 
             # Gerar PDF do contrato
-            #createPDF(contract_data)
-            QMessageBox.information(self, "Sucesso", "Contrato salvo e PDF gerado com sucesso!")
+            from pdf import createPDF
+            pdf_path = createPDF(contract_data)
+            
+            QMessageBox.information(self, "Sucesso", f"Contrato salvo e PDF gerado com sucesso!\nArquivo: {pdf_path}")
             self.close()
         except sqlite3.Error as e:
             QMessageBox.critical(self, "Erro", f"Erro ao salvar contrato: {e}")
+        except Exception as e:
+            QMessageBox.critical(self, "Erro", f"Erro ao gerar PDF: {e}")

@@ -14,6 +14,21 @@ def get_client_data(client_id):
     conn.close()
     print(client)
 
+    if client:
+        return {
+            'id': client[0],
+            'name': client[1],
+            'cnpj': client[2],
+            'address': client[3],
+            'city': client[4],
+            'state': client[5],
+            'cep': client[6],
+            'bank': client[7],
+            'agency': client[8],
+            'account': client[9]
+        }
+    return None
+
 def add_background(canvas, image_path):
     canvas.drawImage(image_path, 0, 0, width=595, height=842)
 
@@ -159,8 +174,9 @@ def signing_text(c):
     comprador_height = add_wrapped_text(c, 345, 425, "TESTE TESTE TESTE TESTE TESTE TESTE", 7, max_width=180, line_height=1)
     add_wrapped_text(c, 400, 425 - comprador_height * 6 - 5, "12.123.123/0001-23", 7, max_width=200, line_height=1)
 
-def createPDF(filename):
-    get_client_data("yay")
+def createPDF(contract_data):
+    filename = "output.pdf"
+    get_client_data(contract_data["seller_id"])
 
     # Background images path
     image_page1 = "CONTRATO MODELO SB & CO_page-0001.jpg"
