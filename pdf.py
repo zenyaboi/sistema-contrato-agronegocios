@@ -2,8 +2,17 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+import sqlite3
 
 isSb = False
+
+def get_client_data(client_id):
+    conn = sqlite3.connect('clients.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM clients WHERE id = ?', (client_id,))
+    client = cursor.fetchone()
+    conn.close()
+    print(client)
 
 def add_background(canvas, image_path):
     canvas.drawImage(image_path, 0, 0, width=595, height=842)
@@ -151,6 +160,8 @@ def signing_text(c):
     add_wrapped_text(c, 400, 425 - comprador_height * 6 - 5, "12.123.123/0001-23", 7, max_width=200, line_height=1)
 
 def createPDF(filename):
+    get_client_data("yay")
+
     # Background images path
     image_page1 = "CONTRATO MODELO SB & CO_page-0001.jpg"
     # SB/CO model
