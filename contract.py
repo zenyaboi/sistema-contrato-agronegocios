@@ -117,7 +117,7 @@ class ContractWindow(QWidget):
 
         # Tipo do contrato
         self.cmbType = QComboBox(page)
-        self.cmbType.addItems(["Soja (SB)", "Trigo (WH)", "Milho (CO)"])
+        self.cmbType.addItems(["SB", "WH", "CO"])
         self.cmbType.currentTextChanged.connect(self.updatePage3)  # Atualizar Página 3 ao mudar o tipo
         layout.addRow("Tipo do Contrato:", self.cmbType)
 
@@ -355,9 +355,9 @@ class ContractWindow(QWidget):
 
             # Gerar PDF do contrato
             from pdf import createPDF
-            pdf_path = createPDF(contract_data)
+            createPDF(contract_data)
             
-            QMessageBox.information(self, "Sucesso", f"Contrato salvo e PDF gerado com sucesso!\nArquivo: {pdf_path}")
+            QMessageBox.information(self, "Sucesso", f"Contrato salvo e PDF gerado com sucesso!")
             self.close()
         except sqlite3.Error as e:
             QMessageBox.critical(self, "Erro", f"Erro ao salvar contrato: {e}")

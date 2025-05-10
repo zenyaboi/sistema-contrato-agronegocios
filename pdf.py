@@ -175,8 +175,9 @@ def signing_text(c):
     add_wrapped_text(c, 400, 425 - comprador_height * 6 - 5, "12.123.123/0001-23", 7, max_width=200, line_height=1)
 
 def createPDF(contract_data):
-    filename = "output.pdf"
-    get_client_data(contract_data["seller_id"])
+    seller = get_client_data(contract_data["seller_id"])
+    buyer = get_client_data(contract_data["buyer_id"])
+    filename = f"CTRVend_{contract_data['contract_number']}{contract_data["contract_type"]}2025 - {seller['name']} x {buyer['name']}.pdf"
 
     # Background images path
     image_page1 = "CONTRATO MODELO SB & CO_page-0001.jpg"
