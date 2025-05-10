@@ -29,6 +29,25 @@ def get_client_data(client_id):
         }
     return None
 
+def get_separate_date(date_str, default_year=None):
+    try:
+        # Try splitting by slash first (DD/MM/YYYY)
+        if '/' in date_str:
+            day, month, year = date_str.split('/')
+            if len(year) == 4 and year.isdigit():
+                return year
+            
+        from datetime import datetime
+        # Try parsing with datetime as fallback
+        date_obj = datetime.strptime(date_str, "%d/%m/%Y")
+        return str(date_obj.year)
+    
+    except (ValueError, AttributeError, IndexError):
+        # Return default year if provided, otherwise current year
+        if default_year is not None:
+            return str(default_year)
+        return str(datetime.now().year)
+
 def add_background(canvas, image_path):
     canvas.drawImage(image_path, 0, 0, width=595, height=842)
 
@@ -87,9 +106,10 @@ def add_wrapped_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold",
 def info_text(c, contract_data):
     seller = get_client_data(contract_data["seller_id"])
     buyer = get_client_data(contract_data["buyer_id"])
+    year = get_separate_date(contract_data["contract_date"])
 
     # contract info
-    add_overlay_text(c, 130, 648, f"{contract_data['contract_number']}/{contract_data['contract_type']}/0000", 10)
+    add_overlay_text(c, 130, 648, f"{contract_data['contract_number']}/{contract_data['contract_type']}/{year}", 10)
     add_overlay_text(c, 325, 648, f"{contract_data['contract_date']}", 10)
 
     # seller info
@@ -182,7 +202,9 @@ def signing_text(c):
 def createPDF(contract_data):
     seller = get_client_data(contract_data["seller_id"])
     buyer = get_client_data(contract_data["buyer_id"])
-    filename = f"CTRVend_{contract_data['contract_number']}{contract_data["contract_type"]}2025 - {seller['name']} x {buyer['name']}.pdf"
+    year = get_separate_date(contract_data["contract_date"])
+    
+    filename = f"CTRVend_{contract_data['contract_number']}{contract_data["contract_type"]}{year} - {seller['name']} x {buyer['name']}.pdf"
 
     # Background images path
     image_page1 = "CONTRATO MODELO SB & CO_page-0001.jpg"

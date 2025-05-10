@@ -123,7 +123,8 @@ class ContractWindow(QWidget):
 
         # Data do contrato
         self.txtDate = QLineEdit(page)
-        self.txtDate.setPlaceholderText("DD de MM de AAAA")
+        self.txtDate.setPlaceholderText("DD/MM/AAAA")
+        self.txtDate.setInputMask("99/99/9999")
         layout.addRow("Data do Contrato:", self.txtDate)
 
         # Vendedor
