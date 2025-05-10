@@ -84,10 +84,14 @@ def add_wrapped_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold",
         canvas.drawString(x, y, text[:50] + "...")
         return line_height
 
-def info_text(c):
+def info_text(c, contract_data):
+    seller = get_client_data(contract_data["seller_id"])
+    buyer = get_client_data(contract_data["buyer_id"])
+
     # contract info
-    add_overlay_text(c, 130, 648, "000/SB/0000", 10)
-    add_overlay_text(c, 325, 648, "00 de Fevereiro de 0000", 10)
+    add_overlay_text(c, 130, 648, f"{contract_data['contract_number']}/{contract_data['contract_type']}/0000", 10)
+    add_overlay_text(c, 325, 648, f"{contract_data['contract_date']}", 10)
+
     # seller info
     add_overlay_text(c, 115, 613, "TESTE TESTE TESTE TESTE TESTE!", 10)
     add_overlay_text(c, 155, 595, "12.123.123/0001-23", 10)
@@ -97,6 +101,7 @@ def info_text(c):
     add_overlay_text(c, 336, 559, "TT", 10)
     add_overlay_text(c, 145, 541, "BRASIL TESTE", 10)
     add_overlay_text(c, 345, 541, "00.000-000", 10)
+
     # buyer info
     add_overlay_text(c, 125, 502, "TESTE TESTE TESTE TESTE TESTE!", 10)
     add_overlay_text(c, 160, 487, "12.123.123/0001-23", 10)
@@ -194,7 +199,7 @@ def createPDF(contract_data):
     # Page 1
     add_background(c, image_page1)
 
-    info_text(c)
+    info_text(c, contract_data)
     
     c.showPage() 
 
