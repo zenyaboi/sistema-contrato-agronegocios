@@ -5,6 +5,20 @@ import sqlite3
 from database import create_contracts_db
 import os
 
+class FocusAwareLineEdit(QLineEdit):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setCursorPosition(0)
+
+    def focusInEvent(self, event):
+        super().focusInEvent(event)
+        self.setCursorPosition(0)
+
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+        if not self.hasSelectedText():
+            self.setCursorPosition(0)
+
 if not os.path.exists('contracts.db'):
     print("Banco de dados 'contracts.db' não encontrado. Criando...")
     create_contracts_db()
@@ -122,7 +136,7 @@ class ContractWindow(QWidget):
         layout.addRow("Tipo do Contrato:", self.cmbType)
 
         # Data do contrato
-        self.txtDate = QLineEdit(page)
+        self.txtDate = FocusAwareLineEdit(page)
         self.txtDate.setPlaceholderText("DD/MM/AAAA")
         self.txtDate.setInputMask("99/99/9999")
         layout.addRow("Data do Contrato:", self.txtDate)

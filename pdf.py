@@ -20,12 +20,13 @@ def get_client_data(client_id):
             'name': client[1],
             'cnpj': client[2],
             'address': client[3],
-            'city': client[4],
-            'state': client[5],
-            'cep': client[6],
-            'bank': client[7],
-            'agency': client[8],
-            'account': client[9]
+            'ie': client[4],
+            'city': client[5],
+            'state': client[6],
+            'cep': client[7],
+            'bank': client[8],
+            'agency': client[9],
+            'account': client[10]
         }
     return None
 
@@ -113,24 +114,24 @@ def info_text(c, contract_data):
     add_overlay_text(c, 325, 648, f"{contract_data['contract_date']}", 10)
 
     # seller info
-    add_overlay_text(c, 115, 613, "TESTE TESTE TESTE TESTE TESTE!", 10)
-    add_overlay_text(c, 155, 595, "12.123.123/0001-23", 10)
-    add_overlay_text(c, 333, 595, "12300012-31", 10)
-    add_overlay_text(c, 170, 577, "RUA TESTE TESTE TESTE TESTE TESTE, 202, NUMERO CASA TERREO AP RODOVIA", 10)
-    add_overlay_text(c, 158, 559, "TESTE TESTE", 10)
-    add_overlay_text(c, 336, 559, "TT", 10)
-    add_overlay_text(c, 145, 541, "BRASIL TESTE", 10)
-    add_overlay_text(c, 345, 541, "00.000-000", 10)
+    add_overlay_text(c, 115, 613, f"{seller['name']}", 10)
+    add_overlay_text(c, 155, 595, f"{seller['cnpj']}", 10)
+    add_overlay_text(c, 333, 595, f"{seller['ie']}", 10)
+    add_overlay_text(c, 170, 577, f"{seller['address']}", 10)
+    add_overlay_text(c, 158, 559, f"{seller['city']}", 10)
+    add_overlay_text(c, 336, 559, f"{seller['state']}", 10)
+    add_overlay_text(c, 145, 541, f"BRASIL", 10)
+    add_overlay_text(c, 345, 541, f"{seller['cep']}", 10)
 
     # buyer info
-    add_overlay_text(c, 125, 502, "TESTE TESTE TESTE TESTE TESTE!", 10)
-    add_overlay_text(c, 160, 487, "12.123.123/0001-23", 10)
-    add_overlay_text(c, 338, 487, "12300012-31", 10)
-    add_overlay_text(c, 174, 469, "RUA TESTE TESTE TESTE TESTE TESTE, 202, NUMERO CASA TERREO AP RODOVIA", 10)
-    add_overlay_text(c, 165, 452, "TESTE TESTE", 10)
-    add_overlay_text(c, 335, 452, "TT", 10)
-    add_overlay_text(c, 160, 434, "BRASIL TESTE", 10)
-    add_overlay_text(c, 343, 434, "00.000-000", 10)
+    add_overlay_text(c, 125, 502, f"{buyer['name']}", 10)
+    add_overlay_text(c, 160, 487, f"{buyer['cnpj']}", 10)
+    add_overlay_text(c, 338, 487, f"{buyer['ie']}", 10)
+    add_overlay_text(c, 174, 469, f"{buyer['address']}", 10)
+    add_overlay_text(c, 165, 452, f"{buyer['city']}", 10)
+    add_overlay_text(c, 335, 452, f"{buyer['state']}", 10)
+    add_overlay_text(c, 160, 434, f"BRASIL", 10)
+    add_overlay_text(c, 343, 434, f"{buyer['cep']}", 10)
 
 def sb_co_text(c):
     # product info (SB/CO)
