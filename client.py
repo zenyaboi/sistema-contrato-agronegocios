@@ -10,6 +10,20 @@ if not os.path.exists('clients.db'):
 else:
     print("Banco de dados 'clients.db' já existe. Verificando tabelas...")
 
+class FocusAwareLineEdit(QLineEdit):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setCursorPosition(0)
+
+    def focusInEvent(self, event):
+        super().focusInEvent(event)
+        self.setCursorPosition(0)
+
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+        if not self.hasSelectedText():
+            self.setCursorPosition(0)
+
 class ThirdWindow(QWidget):
     def __init__(self):
         super().__init__()
@@ -66,7 +80,7 @@ class AddClientWindow(QWidget):
         layout.addRow("Nome:", self.txtName)
 
         # CNPJ
-        self.txtCNPJ = QLineEdit(self)
+        self.txtCNPJ = FocusAwareLineEdit(self)
         self.txtCNPJ.setPlaceholderText("00.000.000/0000-00")
         self.txtCNPJ.setInputMask("00.000.000/0000-00")
         layout.addRow("CNPJ:", self.txtCNPJ)
@@ -76,7 +90,7 @@ class AddClientWindow(QWidget):
         layout.addRow("Endereço:", self.txtAddress)
 
         # IE
-        self.txtIE = QLineEdit(self)
+        self.txtIE = FocusAwareLineEdit(self)
         self.txtIE.setPlaceholderText("00000000-00")
         self.txtIE.setInputMask("00000000-00")
         layout.addRow("IE:", self.txtIE)
@@ -86,12 +100,12 @@ class AddClientWindow(QWidget):
         layout.addRow("Cidade:", self.txtCity)
 
         # UF
-        self.txtState = QLineEdit(self)
+        self.txtState = FocusAwareLineEdit(self)
         self.txtState.setInputMask("AA")
         layout.addRow("UF:", self.txtState)
 
         # CEP
-        self.txtCEP = QLineEdit(self)
+        self.txtCEP = FocusAwareLineEdit(self)
         self.txtCEP.setPlaceholderText("00.000-000")
         self.txtCEP.setInputMask("00.000-000")
         layout.addRow("CEP:", self.txtCEP)
@@ -150,7 +164,7 @@ class AddClientWindow(QWidget):
             # Inserir cliente
             cursor.execute('''
             INSERT INTO clients (name, cnpj, address, ie, city, state, cep, bank, agency, account)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 client_data["name"],
                 client_data["cnpj"],
@@ -168,6 +182,6 @@ class AddClientWindow(QWidget):
 
             # Mensagem de sucesso
             QMessageBox.information(self, "Sucesso", f"Cliente {client_data['name']} salvo com sucesso.")
-            #self.close()
+            self.close()
         except sqlite3.Error as e:
             QMessageBox.critical(self, "Erro", f"Erro ao salvar cliente: {e}")
