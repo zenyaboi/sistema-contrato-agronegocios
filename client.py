@@ -122,7 +122,7 @@ class AddClientWindow(QWidget):
             "name": self.txtName.text(),
             "cnpj": self.txtCNPJ.text(),
             "address": self.txtAddress.text(),
-            "ie": self.txtIe.text(),
+            "ie": self.txtIE.text(),
             "city": self.txtCity.text(),
             "state": self.txtState.text(),
             "cep": self.txtCEP.text(),
@@ -168,6 +168,6 @@ class AddClientWindow(QWidget):
 
             # Mensagem de sucesso
             QMessageBox.information(self, "Sucesso", f"Cliente {client_data['name']} salvo com sucesso.")
-            self.close()
+            #self.close()
         except sqlite3.Error as e:
             QMessageBox.critical(self, "Erro", f"Erro ao salvar cliente: {e}")
