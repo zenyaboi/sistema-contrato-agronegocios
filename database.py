@@ -21,6 +21,7 @@ def create_clients_db():
             name TEXT NOT NULL,
             cnpj TEXT NOT NULL,
             address TEXT,
+            ie TEXT,
             city TEXT,
             state TEXT,
             cep TEXT,
