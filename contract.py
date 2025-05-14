@@ -3,6 +3,7 @@ from PyQt6.QtWidgets import (QWidget, QLabel, QPushButton, QVBoxLayout, QMessage
 from pdf import createPDF
 import sqlite3
 from database import create_contracts_db
+import json
 import os
 
 class FocusAwareLineEdit(QLineEdit):
@@ -299,18 +300,15 @@ class ContractWindow(QWidget):
             self.stackedWidget.setCurrentIndex(current_index + 1)
 
     def saveContract(self):
-        # Verificar se vendedor e comprador foram selecionados
-        if not self.cmbSeller.currentData():
-            QMessageBox.warning(self, "Erro", "Selecione um vendedor.")
-            return
-        if not self.cmbBuyer.currentData():
-            QMessageBox.warning(self, "Erro", "Selecione um comprador.")
+        if not self.cmbSeller.currentData() or not self.cmbBuyer.currentData():
+            QMessageBox.warning(self, "Erro", "Selecione vendedor e comprador.")
             return
 
-        # Obter dados do formulário
+        contract_type = self.cmbType.currentText()
+
         contract_data = {
             "contract_number": self.txtContractNumber.text(),
-            "contract_type": self.cmbType.currentText(),
+            "contract_type": contract_type,
             "contract_date": self.txtDate.text(),
             "seller_id": self.cmbSeller.currentData(),
             "buyer_id": self.cmbBuyer.currentData(),
@@ -321,60 +319,116 @@ class ContractWindow(QWidget):
             "payment": self.txtPayment.text(),
             "weight_quality": self.txtWeightQuality.text(),
             "delivery": self.txtDelivery.text(),
-            "observations": self.txtObservations.toPlainText(),
-            "additional_fields": {}
+            "observations": self.txtObservations.toPlainText()
         }
 
-        # Coletar campos específicos da Página 3
+        quality_params = {}
+        additional_fields = {}
+        
         for i in range(self.dynamicLayout.rowCount()):
             label = self.dynamicLayout.itemAt(i, QFormLayout.ItemRole.LabelRole)
             field = self.dynamicLayout.itemAt(i, QFormLayout.ItemRole.FieldRole)
             if label and field:
-                field_name = label.widget().text().replace(":", "")
+                field_name = label.widget().text().replace(":", "").strip()
                 field_value = field.widget().text()
-                contract_data["additional_fields"][field_name] = field_value
+                
+                if contract_type in ("SB", "CO"):
+                    if field_name == "Umidade Máxima":
+                        quality_params["umidade_maxima"] = field_value
+                    elif field_name == "Impureza Máxima":
+                        quality_params["impureza_maxima"] = field_value
+                    elif field_name == "Ardidos e Avariados":
+                        quality_params["ardidos_avariados"] = field_value
+                    else:
+                        additional_fields[field_name] = field_value
+                elif contract_type == "WH":
+                    if field_name == "Falling Number":
+                        quality_params["falling_number"] = field_value
+                    elif field_name == "Impureza Máxima":
+                        quality_params["impureza_maxima"] = field_value
+                    elif field_name == "Umidade Máxima":
+                        quality_params["umidade_maxima"] = field_value
+                    elif field_name == "P/L Mínimo":
+                        quality_params["pl_minimo"] = field_value
+                    elif field_name == "PH":
+                        quality_params["ph"] = field_value
+                    elif field_name == "DON Máximo":
+                        quality_params["don_maximo"] = field_value
+                    elif field_name == "Cor Mínimo":
+                        quality_params["cor_minimo"] = field_value
+                    else:
+                        additional_fields[field_name] = field_value
 
-        # Verificar campos obrigatórios
-        if not contract_data["contract_number"] or not contract_data["contract_date"]:
-            QMessageBox.warning(self, "Erro", "Preencha todos os campos obrigatórios.")
-            return
+        columns = [
+            "contract_number", "contract_type", "contract_date",
+            "seller_id", "buyer_id", "product", "harvest",
+            "quantity", "price", "payment", "weight_quality",
+            "delivery", "observations"
+        ]
+        values = [
+            contract_data["contract_number"],
+            contract_data["contract_type"],
+            contract_data["contract_date"],
+            contract_data["seller_id"],
+            contract_data["buyer_id"],
+            contract_data["product"],
+            contract_data["harvest"],
+            contract_data["quantity"],
+            contract_data["price"],
+            contract_data["payment"],
+            contract_data["weight_quality"],
+            contract_data["delivery"],
+            contract_data["observations"]
+        ]
 
-        # Salvar contrato no banco de dados
+        if contract_type in ("SB", "CO"):
+            columns.extend(["umidade_maxima", "impureza_maxima", "ardidos_avariados"])
+            values.extend([
+                quality_params.get("umidade_maxima", ""),
+                quality_params.get("impureza_maxima", ""),
+                quality_params.get("ardidos_avariados", "")
+            ])
+        elif contract_type == "WH":
+            columns.extend([
+                "falling_number", "impureza_maxima", "umidade_maxima",
+                "pl_minimo", "ph", "don_maximo", "cor_minimo"
+            ])
+            values.extend([
+                quality_params.get("falling_number", ""),
+                quality_params.get("impureza_maxima", ""),
+                quality_params.get("umidade_maxima", ""),
+                quality_params.get("pl_minimo", ""),
+                quality_params.get("ph", ""),
+                quality_params.get("don_maximo", ""),
+                quality_params.get("cor_minimo", "")
+            ])
+
+        if additional_fields:
+            columns.append("additional_fields")
+            values.append(json.dumps(additional_fields))
+
         try:
             conn = sqlite3.connect('contracts.db')
             cursor = conn.cursor()
-
-            cursor.execute('''
-            INSERT INTO contracts (
-                contract_number, contract_type, contract_date, seller_id, buyer_id,
-                product, harvest, quantity, price, payment, weight_quality, delivery, observations
-            )
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (
-                contract_data["contract_number"],
-                contract_data["contract_type"],
-                contract_data["contract_date"],
-                contract_data["seller_id"],
-                contract_data["buyer_id"],
-                contract_data["product"],
-                contract_data["harvest"],
-                contract_data["quantity"],
-                contract_data["price"],
-                contract_data["payment"],
-                contract_data["weight_quality"],
-                contract_data["delivery"],
-                contract_data["observations"]
-            ))
-            conn.commit()
-            conn.close()
-
-            # Gerar PDF do contrato
-            from pdf import createPDF
-            createPDF(contract_data)
             
-            QMessageBox.information(self, "Sucesso", f"Contrato salvo e PDF gerado com sucesso!")
+            query = f'''
+            INSERT INTO contracts ({", ".join(columns)})
+            VALUES ({", ".join(["?"]*len(columns))})
+            '''
+            cursor.execute(query, values)
+            conn.commit()
+            
+            # Generate PDF with complete data
+            pdf_data = {**contract_data, **quality_params}
+            if additional_fields:
+                pdf_data["additional_fields"] = additional_fields
+            createPDF(pdf_data)
+            
+            QMessageBox.information(self, "Sucesso", "Contrato salvo com sucesso!")
             self.close()
         except sqlite3.Error as e:
             QMessageBox.critical(self, "Erro", f"Erro ao salvar contrato: {e}")
         except Exception as e:
             QMessageBox.critical(self, "Erro", f"Erro ao gerar PDF: {e}")
+        finally:
+            conn.close()
