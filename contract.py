@@ -202,10 +202,10 @@ class ContractWindow(QWidget):
             self.addField("Falling Number:")
             self.addField("Impureza Máxima:")
             self.addField("Umidade Máxima:")
-            self.addField("P/L Mínimo:")
-            self.addField("PH:")
-            self.addField("DON Máximo:")
-            self.addField("Cor Mínimo:")
+            self.addField("P/L:")
+            self.addField("PH Mínimo:")
+            self.addField("W Mínimo:")
+            self.addField("Triguilho:")
         elif "CO" in contract_type:
             self.addField("Umidade Máxima:")
             self.addField("Impureza Máxima:")
@@ -348,14 +348,14 @@ class ContractWindow(QWidget):
                         quality_params["impureza_maxima"] = field_value
                     elif field_name == "Umidade Máxima":
                         quality_params["umidade_maxima"] = field_value
-                    elif field_name == "P/L Mínimo":
+                    elif field_name == "P/L":
                         quality_params["pl_minimo"] = field_value
-                    elif field_name == "PH":
+                    elif field_name == "PH Mínimo":
                         quality_params["ph"] = field_value
-                    elif field_name == "DON Máximo":
-                        quality_params["don_maximo"] = field_value
-                    elif field_name == "Cor Mínimo":
-                        quality_params["cor_minimo"] = field_value
+                    elif field_name == "W Mínimo":
+                        quality_params["w_minimo"] = field_value
+                    elif field_name == "Triguilho":
+                        quality_params["triguilho"] = field_value
                     else:
                         additional_fields[field_name] = field_value
 
@@ -391,7 +391,7 @@ class ContractWindow(QWidget):
         elif contract_type == "WH":
             columns.extend([
                 "falling_number", "impureza_maxima", "umidade_maxima",
-                "pl_minimo", "ph", "don_maximo", "cor_minimo"
+                "pl_minimo", "ph", "w_minimo", "triguilho"
             ])
             values.extend([
                 quality_params.get("falling_number", ""),
@@ -399,8 +399,8 @@ class ContractWindow(QWidget):
                 quality_params.get("umidade_maxima", ""),
                 quality_params.get("pl_minimo", ""),
                 quality_params.get("ph", ""),
-                quality_params.get("don_maximo", ""),
-                quality_params.get("cor_minimo", "")
+                quality_params.get("w_minimo", ""),
+                quality_params.get("triguilho", "")
             ])
 
         if additional_fields:

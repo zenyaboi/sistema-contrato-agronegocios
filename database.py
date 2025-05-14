@@ -67,8 +67,8 @@ def create_contracts_db():
             falling_number TEXT,
             pl_minimo TEXT,
             ph TEXT,
-            don_maximo TEXT,
-            cor_minimo TEXT,
+            w_minimo TEXT,
+            triguilho TEXT,
             -- Additional dynamic fields
             additional_fields TEXT,
             FOREIGN KEY (seller_id) REFERENCES clients (id),
@@ -84,8 +84,8 @@ def create_contracts_db():
             ('falling_number', 'TEXT'),
             ('pl_minimo', 'TEXT'),
             ('ph', 'TEXT'),
-            ('don_maximo', 'TEXT'),
-            ('cor_minimo', 'TEXT'),
+            ('w_minimo', 'TEXT'),
+            ('triguilho', 'TEXT'),
             ('additional_fields', 'TEXT')
         ]
         
