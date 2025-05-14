@@ -133,21 +133,21 @@ def info_text(c, contract_data):
     add_overlay_text(c, 160, 434, f"BRASIL", 10)
     add_overlay_text(c, 343, 434, f"{buyer['cep']}", 10)
 
-def sb_co_text(c):
+def sb_co_text(c, contract_data):
     # product info (SB/CO)
-    add_wrapped_text(c, 40, 792, "TESTE TESTE TESTE TESTE TESTE TESTE", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 155, 791, "9999", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 225, 791, "99", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 285, 791, "99%", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 359, 791, "9", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 40, 792, f"{contract_data['product']}", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 155, 791, f"{contract_data['harvest']}", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 225, 791, f"{contract_data['umidade_maxima']}", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 285, 791, f"{contract_data['impureza_maxima']}%", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 359, 791, f"{contract_data['ardidos_avariados']}", 8, max_width=100, line_height=1)
 
-    add_wrapped_text(c, 150, 556, "0000 TONELADAS MÉTRICAS", 9, max_width=200, line_height=1)
-    add_wrapped_text(c, 150, 544, "R$ 0000,00/SC. 60KG", 9, max_width=200, line_height=1)
-    add_wrapped_text(c, 150, 532, "00/00/0000", 9, max_width=200, line_height=1)
-    add_wrapped_text(c, 150, 521, "TESTE TESTE TESTE TESTE TESTE", 9, max_width=200, line_height=1)
-    add_wrapped_text(c, 150, 509, "TESTE TESTE TESTE TESTE TESTE", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 556, f"{contract_data['quantity']} MÉTRICAS", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 544, f"{contract_data['price']}/SC. 60KG", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 532, f"{contract_data['payment']}", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 521, f"{contract_data['weight_quality']}", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 509, f"{contract_data['delivery']}", 9, max_width=200, line_height=1)
 
-def wh_text(c):
+def wh_text(c, contract_data):
     # product info (WH)
     add_wrapped_text(c, 35, 789, "TESTE TESTE TESTE TESTE TESTE TESTE", 8, max_width=100, line_height=1)
     add_wrapped_text(c, 140, 788, "9999", 8, max_width=100, line_height=1)
@@ -167,7 +167,7 @@ def wh_text(c):
     add_wrapped_text(c, 27, 620, "Trigo isento de insetos vivos e/ou mortos (caso haja incidência, as cargas serão devolvidas, e o vendedor será responsável pelo custo do frete).", 
                     10, max_width=550, line_height=12)
 
-def additional_text(c):
+def additional_text(c, contract_data):
     # product info
     add_wrapped_text(c, 40, 679, "TESTE TESTE TESTE TESTE TESTE TESTE", 8, max_width=100, line_height=1)
     add_wrapped_text(c, 155, 678, "9999", 8, max_width=100, line_height=1)
@@ -175,7 +175,8 @@ def additional_text(c):
     add_wrapped_text(c, 285, 678, "99%", 8, max_width=100, line_height=1)
     add_wrapped_text(c, 359, 678, "9", 8, max_width=100, line_height=1)
 
-def obs_text(c, obs_list):
+def obs_text(c, obs_list, contract_data):
+    isSb = "SB" in contract_data['contract_type'] or "CO" in contract_data['contract_type']
     if (isSb):
         y = 454
     else:
@@ -201,6 +202,8 @@ def signing_text(c):
     add_wrapped_text(c, 400, 425 - comprador_height * 6 - 5, "12.123.123/0001-23", 7, max_width=200, line_height=1)
 
 def createPDF(contract_data):
+    isSb = "SB" in contract_data['contract_type'] or "CO" in contract_data['contract_type']
+
     seller = get_client_data(contract_data["seller_id"])
     buyer = get_client_data(contract_data["buyer_id"])
     year = get_separate_date(contract_data["contract_date"])
@@ -209,10 +212,14 @@ def createPDF(contract_data):
 
     # Background images path
     image_page1 = "CONTRATO MODELO SB & CO_page-0001.jpg"
-    # SB/CO model
-    #image_page2 = "CONTRATO MODELO SB & CO_page-0002.jpg"
-    # WH model
-    image_page2 = "CONTRATO MODELO WH_page-0002.jpg"
+
+    if (isSb):
+        # SB/CO model
+        image_page2 = "CONTRATO MODELO SB & CO_page-0002.jpg"
+    else:
+        # WH model
+        image_page2 = "CONTRATO MODELO WH_page-0002.jpg"
+
     image_page3 = "CONTRATO MODELO SB & CO_page-0003.jpg"
     image_page4 = "CONTRATO MODELO SB & CO_page-0004.jpg"
 
@@ -230,10 +237,10 @@ def createPDF(contract_data):
     add_background(c, image_page2)
 
     if (isSb):
-        sb_co_text(c)
-        additional_text(c)
+        sb_co_text(c, contract_data)
+        additional_text(c, contract_data)
     else:
-        wh_text(c)
+        wh_text(c, contract_data)
 
     observacoes = [
         "Observação curta.",
@@ -242,7 +249,7 @@ def createPDF(contract_data):
         "Uma ainda mais longa para testar se o recuo vertical funciona corretamente ao empilhar vários blocos de texto grandes.",
     ]
     
-    obs_text(c, observacoes)
+    obs_text(c, observacoes, contract_data)
 
     c.showPage()
 
