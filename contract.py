@@ -252,6 +252,12 @@ class ContractWindow(QWidget):
         self.txtDelivery = QLineEdit(page)
         layout.addRow("Entrega/Retirada:", self.txtDelivery)
 
+        # Lugar de entrega
+        self.txtDelivPlace = QLineEdit(page)
+        self.txtStateDelivPlace = QLineEdit(page)
+        layout.addRow("Lugar de entrega/retirada:", self.txtDelivPlace)
+        layout.addRow("Estado do lugar de entrega/retirada:", self.txtStateDelivPlace)
+
         page.setLayout(layout)
         return page
 
@@ -319,7 +325,9 @@ class ContractWindow(QWidget):
             "payment": self.txtPayment.text(),
             "weight_quality": self.txtWeightQuality.text(),
             "delivery": self.txtDelivery.text(),
-            "observations": self.txtObservations.toPlainText()
+            "observations": self.txtObservations.toPlainText(),
+            "delivPlace": self.txtDelivPlace.text(),
+            "stateDelivPlace": self.txtStateDelivPlace.text()
         }
 
         quality_params = {}
@@ -363,7 +371,7 @@ class ContractWindow(QWidget):
             "contract_number", "contract_type", "contract_date",
             "seller_id", "buyer_id", "product", "harvest",
             "quantity", "price", "payment", "weight_quality",
-            "delivery", "observations"
+            "delivery", "observations", "delivPlace", "stateDelivPlace"
         ]
         values = [
             contract_data["contract_number"],
@@ -378,7 +386,9 @@ class ContractWindow(QWidget):
             contract_data["payment"],
             contract_data["weight_quality"],
             contract_data["delivery"],
-            contract_data["observations"]
+            contract_data["observations"],
+            contract_data["delivPlace"],
+            contract_data["stateDelivPlace"]
         ]
 
         if contract_type in ("SB", "CO"):

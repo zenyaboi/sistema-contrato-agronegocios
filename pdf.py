@@ -185,15 +185,17 @@ def obs_text(c, obs_list, contract_data):
         used_height = add_wrapped_text(c, 27, y, obs, 10, max_width=550, line_height=12)
         y -= used_height + 5
 
-def payment_info_text(c):
-    add_wrapped_text(c, 138, 692, "BANCO: TESTE TESTE TESTE TESTE", 7, max_width=200, line_height=1)
-    add_wrapped_text(c, 308, 692, "0000-0", 7, max_width=100, line_height=1)
-    add_wrapped_text(c, 408, 692, "000000-0", 7, max_width=100, line_height=1)
-    add_wrapped_text(c, 138, 679, "TESTE TESTE TESTE TESTE TESTE TESTE", 7, max_width=100, line_height=1)
-    add_wrapped_text(c, 298, 679, "12.123.123/0001-23", 7, max_width=100, line_height=1)
-    add_wrapped_text(c, 138, 658, "CIF TESTE TESTE TESTE TESTE", 7, max_width=150, line_height=1)
-    add_wrapped_text(c, 290, 658, "TT", 7, max_width=100, line_height=1)
-    add_overlay_text(c, 138, 634, "0,20% TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE", 7)
+def payment_info_text(c, contract_data):
+    seller = get_client_data(contract_data["seller_id"])
+
+    add_wrapped_text(c, 138, 692, f"BANCO: {seller['bank']}", 7, max_width=200, line_height=1)
+    add_wrapped_text(c, 308, 692, f"{seller['agency']}", 7, max_width=100, line_height=1)
+    add_wrapped_text(c, 408, 692, f"{seller['account']}", 7, max_width=100, line_height=1)
+    add_wrapped_text(c, 138, 679, f"{seller['name']}", 7, max_width=100, line_height=1)
+    add_wrapped_text(c, 298, 679, f"{seller['cnpj']}", 7, max_width=100, line_height=1)
+    add_wrapped_text(c, 138, 658, f"CIF {contract_data['delivPlace']}", 7, max_width=150, line_height=1)
+    add_wrapped_text(c, 290, 658, f"{contract_data['stateDelivPlace']}", 7, max_width=100, line_height=1)
+    add_overlay_text(c, 138, 634, f"0,20% sobre o valor da operação, a ser pago pela Vendedora", 7)
 
 def signing_text(c):
     vendedor_height = add_wrapped_text(c, 40, 425, "TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE", 7, max_width=180, line_height=1)
@@ -256,7 +258,7 @@ def createPDF(contract_data):
     # Page 3
     add_background(c, image_page3)
 
-    payment_info_text(c)
+    payment_info_text(c, contract_data)
     signing_text(c)
 
     c.showPage()

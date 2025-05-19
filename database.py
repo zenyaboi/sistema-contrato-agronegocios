@@ -59,6 +59,8 @@ def create_contracts_db():
             weight_quality TEXT,
             delivery TEXT,
             observations TEXT,
+            delivPlace TEXT,
+            stateDelivPlace TEXT,
             -- SB/CO fields
             umidade_maxima TEXT,
             impureza_maxima TEXT,
