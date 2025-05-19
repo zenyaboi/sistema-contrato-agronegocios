@@ -1,4 +1,5 @@
-from PyQt6.QtWidgets import (QWidget, QLabel, QPushButton, QVBoxLayout, QMessageBox, QFormLayout, QLineEdit)
+from PyQt6.QtWidgets import (QWidget, QLabel, QPushButton, QVBoxLayout, QMessageBox, QLineEdit, 
+                             QComboBox, QTableWidget, QHBoxLayout, QFormLayout, QTextEdit, QStackedWidget)
 import sqlite3
 from database import create_clients_db
 import os
@@ -8,6 +9,20 @@ if not os.path.exists('clients.db'):
     create_clients_db()
 else:
     print("Banco de dados 'clients.db' já existe. Verificando tabelas...")
+
+class FocusAwareLineEdit(QLineEdit):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setCursorPosition(0)
+
+    def focusInEvent(self, event):
+        super().focusInEvent(event)
+        self.setCursorPosition(0)
+
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+        if not self.hasSelectedText():
+            self.setCursorPosition(0)
 
 class ThirdWindow(QWidget):
     def __init__(self):
@@ -65,23 +80,34 @@ class AddClientWindow(QWidget):
         layout.addRow("Nome:", self.txtName)
 
         # CNPJ
-        self.txtCNPJ = QLineEdit(self)
+        self.txtCNPJ = FocusAwareLineEdit(self)
+        self.txtCNPJ.setPlaceholderText("00.000.000/0000-00")
+        self.txtCNPJ.setInputMask("00.000.000/0000-00")
         layout.addRow("CNPJ:", self.txtCNPJ)
 
         # Endereço
         self.txtAddress = QLineEdit(self)
         layout.addRow("Endereço:", self.txtAddress)
 
+        # IE
+        self.txtIE = FocusAwareLineEdit(self)
+        self.txtIE.setPlaceholderText("00000000-00")
+        self.txtIE.setInputMask("00000000-00")
+        layout.addRow("IE:", self.txtIE)
+
         # Cidade
         self.txtCity = QLineEdit(self)
         layout.addRow("Cidade:", self.txtCity)
 
         # UF
-        self.txtState = QLineEdit(self)
+        self.txtState = FocusAwareLineEdit(self)
+        self.txtState.setInputMask("AA")
         layout.addRow("UF:", self.txtState)
 
         # CEP
-        self.txtCEP = QLineEdit(self)
+        self.txtCEP = FocusAwareLineEdit(self)
+        self.txtCEP.setPlaceholderText("00.000-000")
+        self.txtCEP.setInputMask("00.000-000")
         layout.addRow("CEP:", self.txtCEP)
 
         # Banco
@@ -110,6 +136,7 @@ class AddClientWindow(QWidget):
             "name": self.txtName.text(),
             "cnpj": self.txtCNPJ.text(),
             "address": self.txtAddress.text(),
+            "ie": self.txtIE.text(),
             "city": self.txtCity.text(),
             "state": self.txtState.text(),
             "cep": self.txtCEP.text(),
@@ -136,12 +163,13 @@ class AddClientWindow(QWidget):
 
             # Inserir cliente
             cursor.execute('''
-            INSERT INTO clients (name, cnpj, address, city, state, cep, bank, agency, account)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO clients (name, cnpj, address, ie, city, state, cep, bank, agency, account)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 client_data["name"],
                 client_data["cnpj"],
                 client_data["address"],
+                client_data["ie"],
                 client_data["city"],
                 client_data["state"],
                 client_data["cep"],

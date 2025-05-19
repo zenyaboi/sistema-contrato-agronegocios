@@ -21,6 +21,7 @@ def create_clients_db():
             name TEXT NOT NULL,
             cnpj TEXT NOT NULL,
             address TEXT,
+            ie TEXT,
             city TEXT,
             state TEXT,
             cep TEXT,
@@ -41,9 +42,7 @@ def create_contracts_db():
     conn = sqlite3.connect('contracts.db')
     cursor = conn.cursor()
 
-    # Verificar se a tabela de contratos já existe
     if not table_exists(cursor, 'contracts'):
-        # Criar tabela de contratos
         cursor.execute('''
         CREATE TABLE contracts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,13 +59,44 @@ def create_contracts_db():
             weight_quality TEXT,
             delivery TEXT,
             observations TEXT,
+            delivPlace TEXT,
+            stateDelivPlace TEXT,
+            -- SB/CO fields
+            umidade_maxima TEXT,
+            impureza_maxima TEXT,
+            ardidos_avariados TEXT,
+            -- WH fields
+            falling_number TEXT,
+            pl_minimo TEXT,
+            ph TEXT,
+            w_minimo TEXT,
+            triguilho TEXT,
+            -- Additional dynamic fields
+            additional_fields TEXT,
             FOREIGN KEY (seller_id) REFERENCES clients (id),
             FOREIGN KEY (buyer_id) REFERENCES clients (id)
         )
         ''')
         print("Tabela 'contracts' criada com sucesso.")
     else:
-        print("Tabela 'contracts' já existe.")
+        columns_to_add = [
+            ('umidade_maxima', 'TEXT'),
+            ('impureza_maxima', 'TEXT'),
+            ('ardidos_avariados', 'TEXT'),
+            ('falling_number', 'TEXT'),
+            ('pl_minimo', 'TEXT'),
+            ('ph', 'TEXT'),
+            ('w_minimo', 'TEXT'),
+            ('triguilho', 'TEXT'),
+            ('additional_fields', 'TEXT')
+        ]
+        
+        for column, col_type in columns_to_add:
+            cursor.execute(f"PRAGMA table_info(contracts)")
+            columns = [info[1] for info in cursor.fetchall()]
+            if column not in columns:
+                cursor.execute(f"ALTER TABLE contracts ADD COLUMN {column} {col_type}")
+                print(f"Coluna '{column}' adicionada à tabela 'contracts'.")
 
     conn.commit()
     conn.close()
