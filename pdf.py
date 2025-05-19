@@ -197,11 +197,14 @@ def payment_info_text(c, contract_data):
     add_wrapped_text(c, 290, 658, f"{contract_data['stateDelivPlace']}", 7, max_width=100, line_height=1)
     add_overlay_text(c, 138, 634, f"0,20% sobre o valor da operação, a ser pago pela Vendedora", 7)
 
-def signing_text(c):
-    vendedor_height = add_wrapped_text(c, 40, 425, "TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE TESTE", 7, max_width=180, line_height=1)
-    add_wrapped_text(c, 81, 425 - vendedor_height * 6 - 5, "12.123.123/0001-23", 7, max_width=200, line_height=1)
-    comprador_height = add_wrapped_text(c, 345, 425, "TESTE TESTE TESTE TESTE TESTE TESTE", 7, max_width=180, line_height=1)
-    add_wrapped_text(c, 400, 425 - comprador_height * 6 - 5, "12.123.123/0001-23", 7, max_width=200, line_height=1)
+def signing_text(c, contract_data):
+    seller = get_client_data(contract_data['seller_id'])
+    buyer = get_client_data(contract_data['buyer_id'])
+
+    vendedor_height = add_wrapped_text(c, 40, 425, f"{seller['name']}", 7, max_width=180, line_height=1)
+    add_wrapped_text(c, 81, 425 - vendedor_height * 6 - 5, f"{seller['cnpj']}", 7, max_width=200, line_height=1)
+    comprador_height = add_wrapped_text(c, 345, 425, f"{buyer['name']}", 7, max_width=180, line_height=1)
+    add_wrapped_text(c, 400, 425 - comprador_height * 6 - 5, f"{buyer['cnpj']}", 7, max_width=200, line_height=1)
 
 def createPDF(contract_data):
     isSb = "SB" in contract_data['contract_type'] or "CO" in contract_data['contract_type']
@@ -259,7 +262,7 @@ def createPDF(contract_data):
     add_background(c, image_page3)
 
     payment_info_text(c, contract_data)
-    signing_text(c)
+    signing_text(c, contract_data)
 
     c.showPage()
 

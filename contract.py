@@ -254,8 +254,9 @@ class ContractWindow(QWidget):
 
         # Lugar de entrega
         self.txtDelivPlace = QLineEdit(page)
-        self.txtStateDelivPlace = QLineEdit(page)
         layout.addRow("Lugar de entrega/retirada:", self.txtDelivPlace)
+        self.txtStateDelivPlace = QLineEdit(page)
+        self.txtStateDelivPlace.setInputMask("AA")
         layout.addRow("Estado do lugar de entrega/retirada:", self.txtStateDelivPlace)
 
         page.setLayout(layout)
