@@ -168,7 +168,14 @@ def wh_text(c, contract_data):
                     10, max_width=550, line_height=12)
 
 def additional_text(c, contract_data):
-    # product info
+    # product info names
+    add_wrapped_text(c, 55, 708, "TESTE TESTE TESTE TESTE", 9, max_width=80, line_height=1)
+    add_wrapped_text(c, 150, 708, "TESTE TESTE", 9, max_width=60, line_height=1)
+    add_wrapped_text(c, 213, 708, "TESTE TESTE", 9, max_width=60, line_height=1)
+    add_wrapped_text(c, 278, 708, "TESTE TESTE", 9, max_width=60, line_height=1)
+    add_wrapped_text(c, 344, 708, "TESTE TESTE", 9, max_width=60, line_height=1)
+
+    # product info values
     add_wrapped_text(c, 40, 679, "TESTE TESTE TESTE TESTE TESTE TESTE", 8, max_width=100, line_height=1)
     add_wrapped_text(c, 155, 678, "9999", 8, max_width=100, line_height=1)
     add_wrapped_text(c, 225, 678, "99", 8, max_width=100, line_height=1)
