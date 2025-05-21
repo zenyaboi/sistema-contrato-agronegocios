@@ -53,25 +53,24 @@ def get_separate_date(date_str, default_year=None):
 def add_background(canvas, image_path):
     canvas.drawImage(image_path, 0, 0, width=595, height=842)
 
-def add_overlay_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold", line_height=17):
-    # Cria um objeto de texto
+def add_overlay_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold", line_height=17, alignment="left"):
     text_object = canvas.beginText(x, y)
     text_object.setFont(font_name, font_size)
     text_object.setFillColorRGB(0, 0, 0)
 
-    # Divide o texto em linhas
-    lines = text.split("\n")  # Quebra o texto em linhas manualmente
+    lines = text.split("\n")
 
-    # Adiciona cada linha ao TextObject
     for line in lines:
-        text_object.textLine(line)  # Adiciona uma linha e move para a próxima
-        text_object.moveCursor(0, -line_height)  # Ajusta o espaçamento entre linhas
+        if alignment == "center":
+            line_width = canvas.stringWidth(line, font_name, font_size)
+            text_object.setTextOrigin(x - line_width / 2, text_object.getY())
+        text_object.textLine(line)
+        text_object.moveCursor(0, -line_height)
 
-    # Desenha o texto no canvas
     canvas.drawText(text_object)
 
 def add_wrapped_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold", 
-                    max_width=100, line_height=12):
+                    max_width=100, line_height=12, alignment="left"):
     try:
         canvas.setFont(font_name, font_size)
         words = text.split()
@@ -94,6 +93,9 @@ def add_wrapped_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold",
         text_object = canvas.beginText(x, y)
         text_object.setFont(font_name, font_size)
         for line in lines:
+            if alignment == "center":
+                line_width = canvas.stringWidth(line, font_name, font_size)
+                text_object.setTextOrigin(x - line_width / 2, text_object.getY())
             text_object.textLine(line)
 
         canvas.drawText(text_object)
@@ -136,11 +138,11 @@ def info_text(c, contract_data):
 
 def sb_co_text(c, contract_data):
     # product info (SB/CO)
-    add_wrapped_text(c, 40, 792, f"{contract_data['product']}", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 155, 791, f"{contract_data['harvest']}", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 225, 791, f"{contract_data['umidade_maxima']}", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 285, 791, f"{contract_data['impureza_maxima']}%", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 359, 791, f"{contract_data['ardidos_avariados']}", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 80, 792, f"{contract_data['product']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 155, 791, f"{contract_data['harvest']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 225, 791, f"{contract_data['umidade_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 285, 791, f"{contract_data['impureza_maxima']}%", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 359, 791, f"{contract_data['ardidos_avariados']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
 
     add_wrapped_text(c, 150, 556, f"{contract_data['quantity']} MÉTRICAS", 9, max_width=200, line_height=1)
     add_wrapped_text(c, 150, 544, f"R${contract_data['price']}/SC. 60KG", 9, max_width=200, line_height=1)
@@ -150,15 +152,15 @@ def sb_co_text(c, contract_data):
 
 def wh_text(c, contract_data):
     # product info (WH)
-    add_wrapped_text(c, 35, 789, f"{contract_data['product']}", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 140, 788, f"{contract_data['harvest']}", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 194, 788, f"{contract_data['umidade_maxima']}", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 250, 788, f"{contract_data['ph']}", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 330, 788, f"{contract_data['falling_number']}", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 396, 788, f"{contract_data['w_minimo']}", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 440, 788, f"{contract_data['pl_minimo']}", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 489, 788, f"{contract_data['impureza_maxima']}", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 552, 788, f"{contract_data['triguilho']}", 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 35, 789, f"{contract_data['product']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 140, 788, f"{contract_data['harvest']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 194, 788, f"{contract_data['umidade_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 250, 788, f"{contract_data['ph']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 330, 788, f"{contract_data['falling_number']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 396, 788, f"{contract_data['w_minimo']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 440, 788, f"{contract_data['pl_minimo']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 489, 788, f"{contract_data['impureza_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 552, 788, f"{contract_data['triguilho']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
 
     add_wrapped_text(c, 150, 722, f"{contract_data['quantity']} TONELADAS MÉTRICAS", 9, max_width=200, line_height=1)
     add_wrapped_text(c, 150, 710, f"R${contract_data['price']}/TONELADA MÉTRICA", 9, max_width=200, line_height=1)
@@ -191,18 +193,18 @@ def additional_text(c, contract_data):
     field_values = field_values + [""] * (5 - len(field_values))
     
     # Nomes dos campos (mantendo as posições exatas)
-    add_wrapped_text(c, 55, 708, field_keys[0], 9, max_width=80, line_height=1)
-    add_wrapped_text(c, 150, 708, field_keys[1], 9, max_width=60, line_height=1)
-    add_wrapped_text(c, 213, 708, field_keys[2], 9, max_width=60, line_height=1)
-    add_wrapped_text(c, 278, 708, field_keys[3], 9, max_width=60, line_height=1)
-    add_wrapped_text(c, 344, 708, field_keys[4], 9, max_width=60, line_height=1)
+    add_wrapped_text(c, 55, 708, field_keys[0], 9, max_width=80, line_height=1, alignment="center")
+    add_wrapped_text(c, 150, 708, field_keys[1], 9, max_width=60, line_height=1, alignment="center")
+    add_wrapped_text(c, 213, 708, field_keys[2], 9, max_width=60, line_height=1, alignment="center")
+    add_wrapped_text(c, 278, 708, field_keys[3], 9, max_width=60, line_height=1, alignment="center")
+    add_wrapped_text(c, 344, 708, field_keys[4], 9, max_width=60, line_height=1, alignment="center")
 
     # Valores dos campos (mantendo as posições exatas)
-    add_wrapped_text(c, 40, 679, str(field_values[0]), 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 155, 678, str(field_values[1]), 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 225, 678, str(field_values[2]), 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 285, 678, str(field_values[3]), 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 359, 678, str(field_values[4]), 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 40, 679, str(field_values[0]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 155, 678, str(field_values[1]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 225, 678, str(field_values[2]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 285, 678, str(field_values[3]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 359, 678, str(field_values[4]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
 
 def obs_text(c, obs_list, contract_data):
     isSb = "SB" in contract_data['contract_type'] or "CO" in contract_data['contract_type']
@@ -230,10 +232,10 @@ def signing_text(c, contract_data):
     seller = get_client_data(contract_data['seller_id'])
     buyer = get_client_data(contract_data['buyer_id'])
 
-    vendedor_height = add_wrapped_text(c, 40, 425, f"{seller['name']}", 7, max_width=180, line_height=1)
-    add_wrapped_text(c, 81, 425 - vendedor_height * 6 - 5, f"{seller['cnpj']}", 7, max_width=200, line_height=1)
-    comprador_height = add_wrapped_text(c, 345, 425, f"{buyer['name']}", 7, max_width=180, line_height=1)
-    add_wrapped_text(c, 400, 425 - comprador_height * 6 - 5, f"{buyer['cnpj']}", 7, max_width=200, line_height=1)
+    vendedor_height = add_wrapped_text(c, 40, 425, f"{seller['name']}", 7, max_width=180, line_height=1, alignment="center")
+    add_wrapped_text(c, 81, 425 - vendedor_height * 6 - 5, f"{seller['cnpj']}", 7, max_width=200, line_height=1, alignment="center")
+    comprador_height = add_wrapped_text(c, 345, 425, f"{buyer['name']}", 7, max_width=180, line_height=1, alignment="center")
+    add_wrapped_text(c, 400, 425 - comprador_height * 6 - 5, f"{buyer['cnpj']}", 7, max_width=200, line_height=1, alignment="center")
 
 def createPDF(contract_data):
     isSb = "SB" in contract_data['contract_type'] or "CO" in contract_data['contract_type']
@@ -259,6 +261,8 @@ def createPDF(contract_data):
 
     # Create a PDF using canvas
     c = canvas.Canvas(filename, pagesize=A4)
+
+    print(c.getAvailableFonts())
 
     # Page 1
     add_background(c, image_page1)
