@@ -3,6 +3,7 @@ from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 import sqlite3
+import json
 
 isSb = False
 
@@ -168,19 +169,40 @@ def wh_text(c, contract_data):
                     10, max_width=550, line_height=12)
 
 def additional_text(c, contract_data):
-    # product info names
-    add_wrapped_text(c, 55, 708, "TESTE TESTE TESTE TESTE", 9, max_width=80, line_height=1)
-    add_wrapped_text(c, 150, 708, "TESTE TESTE", 9, max_width=60, line_height=1)
-    add_wrapped_text(c, 213, 708, "TESTE TESTE", 9, max_width=60, line_height=1)
-    add_wrapped_text(c, 278, 708, "TESTE TESTE", 9, max_width=60, line_height=1)
-    add_wrapped_text(c, 344, 708, "TESTE TESTE", 9, max_width=60, line_height=1)
+    if 'additional_fields' not in contract_data:
+        return
 
-    # product info values
-    add_wrapped_text(c, 40, 679, "TESTE TESTE TESTE TESTE TESTE TESTE", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 155, 678, "9999", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 225, 678, "99", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 285, 678, "99%", 8, max_width=100, line_height=1)
-    add_wrapped_text(c, 359, 678, "9", 8, max_width=100, line_height=1)
+    additional_fields = contract_data['additional_fields']
+    if isinstance(additional_fields, str):
+        try:
+            additional_fields = json.loads(additional_fields)
+        except:
+            return
+    
+    if not additional_fields:
+        return
+
+    # Obter as chaves e valores dos campos adicionais (limitados a 5 campos)
+    field_keys = list(additional_fields.keys())[:5]
+    field_values = list(additional_fields.values())[:5]
+    
+    # Preencher arrays com strings vazias para garantir 5 elementos
+    field_keys = field_keys + [""] * (5 - len(field_keys))
+    field_values = field_values + [""] * (5 - len(field_values))
+    
+    # Nomes dos campos (mantendo as posições exatas)
+    add_wrapped_text(c, 55, 708, field_keys[0], 9, max_width=80, line_height=1)
+    add_wrapped_text(c, 150, 708, field_keys[1], 9, max_width=60, line_height=1)
+    add_wrapped_text(c, 213, 708, field_keys[2], 9, max_width=60, line_height=1)
+    add_wrapped_text(c, 278, 708, field_keys[3], 9, max_width=60, line_height=1)
+    add_wrapped_text(c, 344, 708, field_keys[4], 9, max_width=60, line_height=1)
+
+    # Valores dos campos (mantendo as posições exatas)
+    add_wrapped_text(c, 40, 679, str(field_values[0]), 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 155, 678, str(field_values[1]), 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 225, 678, str(field_values[2]), 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 285, 678, str(field_values[3]), 8, max_width=100, line_height=1)
+    add_wrapped_text(c, 359, 678, str(field_values[4]), 8, max_width=100, line_height=1)
 
 def obs_text(c, obs_list, contract_data):
     isSb = "SB" in contract_data['contract_type'] or "CO" in contract_data['contract_type']

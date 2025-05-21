@@ -338,35 +338,41 @@ class ContractWindow(QWidget):
             label = self.dynamicLayout.itemAt(i, QFormLayout.ItemRole.LabelRole)
             field = self.dynamicLayout.itemAt(i, QFormLayout.ItemRole.FieldRole)
             if label and field:
-                field_name = label.widget().text().replace(":", "").strip()
-                field_value = field.widget().text()
+                label_widget = label.widget()
+                field_widget = field.widget()
+
+                if isinstance(label_widget, QLineEdit):
+                    field_name = label_widget.text()
+                    field_value = field_widget.text()
+                    additional_fields[field_name] = field_value
+                else:
+                    field_name = label.widget().text().replace(":", "").strip()
+                    field_value = field.widget().text()
                 
-                if contract_type in ("SB", "CO"):
-                    if field_name == "Umidade Máxima":
-                        quality_params["umidade_maxima"] = field_value
-                    elif field_name == "Impureza Máxima":
-                        quality_params["impureza_maxima"] = field_value
-                    elif field_name == "Ardidos e Avariados":
-                        quality_params["ardidos_avariados"] = field_value
-                    else:
-                        additional_fields[field_name] = field_value
-                elif contract_type == "WH":
-                    if field_name == "Falling Number":
-                        quality_params["falling_number"] = field_value
-                    elif field_name == "Impureza Máxima":
-                        quality_params["impureza_maxima"] = field_value
-                    elif field_name == "Umidade Máxima":
-                        quality_params["umidade_maxima"] = field_value
-                    elif field_name == "P/L":
-                        quality_params["pl_minimo"] = field_value
-                    elif field_name == "PH Mínimo":
-                        quality_params["ph"] = field_value
-                    elif field_name == "W Mínimo":
-                        quality_params["w_minimo"] = field_value
-                    elif field_name == "Triguilho":
-                        quality_params["triguilho"] = field_value
-                    else:
-                        additional_fields[field_name] = field_value
+                    if contract_type in ("SB", "CO"):
+                        if field_name == "Umidade Máxima":
+                            quality_params["umidade_maxima"] = field_value
+                        elif field_name == "Impureza Máxima":
+                            quality_params["impureza_maxima"] = field_value
+                        elif field_name == "Ardidos e Avariados":
+                            quality_params["ardidos_avariados"] = field_value
+                        else:
+                            additional_fields[field_name] = field_value
+                    elif contract_type == "WH":
+                        if field_name == "Falling Number":
+                            quality_params["falling_number"] = field_value
+                        elif field_name == "Impureza Máxima":
+                            quality_params["impureza_maxima"] = field_value
+                        elif field_name == "Umidade Máxima":
+                            quality_params["umidade_maxima"] = field_value
+                        elif field_name == "P/L":
+                            quality_params["pl_minimo"] = field_value
+                        elif field_name == "PH Mínimo":
+                            quality_params["ph"] = field_value
+                        elif field_name == "W Mínimo":
+                            quality_params["w_minimo"] = field_value
+                        elif field_name == "Triguilho":
+                            quality_params["triguilho"] = field_value
 
         columns = [
             "contract_number", "contract_type", "contract_date",
