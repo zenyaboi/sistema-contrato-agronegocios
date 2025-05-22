@@ -206,12 +206,18 @@ def additional_text(c, contract_data):
     add_wrapped_text(c, 285, 678, str(field_values[3]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 359, 678, str(field_values[4]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
 
-def obs_text(c, obs_list, contract_data):
+def obs_text(c, obs_text, contract_data):
     isSb = "SB" in contract_data['contract_type'] or "CO" in contract_data['contract_type']
     if (isSb):
         y = 454
     else:
         y = 595
+    
+    obs_list = [line.strip() for line in obs_text.split('\n') if line.strip()]
+
+    if not obs_list:
+        return
+
     for obs in obs_list:
         used_height = add_wrapped_text(c, 27, y, obs, 10, max_width=550, line_height=12)
         y -= used_height + 5
@@ -279,15 +285,10 @@ def createPDF(contract_data):
         additional_text(c, contract_data)
     else:
         wh_text(c, contract_data)
-
-    observacoes = [
-        "Observação curta.",
-        "Observação bem mais longa que provavelmente vai ocupar mais de uma linha dependendo da largura da caixa.",
-        "Outra observação compacta.",
-        "Uma ainda mais longa para testar se o recuo vertical funciona corretamente ao empilhar vários blocos de texto grandes.",
-    ]
     
-    obs_text(c, observacoes, contract_data)
+
+
+    obs_text(c, contract_data.get('observations', ''), contract_data)
 
     c.showPage()
 
