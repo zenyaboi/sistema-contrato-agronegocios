@@ -1,5 +1,7 @@
 from PyQt6.QtWidgets import (QWidget, QLabel, QPushButton, QVBoxLayout, QMessageBox, QLineEdit, 
-                             QComboBox, QTableWidget, QHBoxLayout, QFormLayout, QTextEdit, QStackedWidget)
+                             QComboBox, QTableWidget, QHBoxLayout, QFormLayout, QTextEdit, QStackedWidget,
+                             QTableWidgetItem, QHeaderView)
+from PyQt6.QtCore import Qt
 import sqlite3
 from database import create_clients_db
 import os
@@ -56,13 +58,12 @@ class ThirdWindow(QWidget):
         self.setLayout(layout)
     
     def addClient(self):
-        # Abrir janela para adicionar cliente
         self.client_window = AddClientWindow()
         self.client_window.show()
 
     def editClient(self):
-        # Abrir janela para editar cliente (implementar lógica)
-        QMessageBox.information(self, "Editar Cliente", "Funcionalidade em desenvolvimento.")
+        self.edit_window = EditClientSelectWindow()
+        self.edit_window.show()
 
 class AddClientWindow(QWidget):
     def __init__(self):
@@ -185,3 +186,169 @@ class AddClientWindow(QWidget):
             self.close()
         except sqlite3.Error as e:
             QMessageBox.critical(self, "Erro", f"Erro ao salvar cliente: {e}")
+
+class EditClientSelectWindow(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Selecionar Cliente para Editar")
+        self.setFixedSize(600, 400)
+        
+        layout = QVBoxLayout()
+        
+        # ComboBox para selecionar cliente
+        self.cmbClients = QComboBox()
+        self.loadClients()
+        layout.addWidget(QLabel("Selecione o cliente:"))
+        layout.addWidget(self.cmbClients)
+        
+        # Botões
+        btnEdit = QPushButton("Editar Cliente Selecionado")
+        btnRefresh = QPushButton("Atualizar Lista")
+        btnCancel = QPushButton("Cancelar")
+        
+        btnEdit.clicked.connect(self.editClient)
+        btnRefresh.clicked.connect(self.loadClients)
+        btnCancel.clicked.connect(self.close)
+        
+        layout.addWidget(btnEdit)
+        layout.addWidget(btnRefresh)
+        layout.addWidget(btnCancel)
+        
+        self.setLayout(layout)
+    
+    def loadClients(self):
+        self.cmbClients.clear()
+        self.cmbClients.addItem("Selecione um cliente...", None)
+        
+        try:
+            conn = sqlite3.connect('clients.db')
+            cursor = conn.cursor()
+            cursor.execute('SELECT id, name FROM clients ORDER BY name')
+            clients = cursor.fetchall()
+            conn.close()
+            
+            for client_id, name in clients:
+                self.cmbClients.addItem(name, client_id)
+                
+        except sqlite3.Error as e:
+            QMessageBox.critical(self, "Erro", f"Erro ao carregar clientes: {e}")
+    
+    def editClient(self):
+        client_id = self.cmbClients.currentData()
+        if not client_id:
+            QMessageBox.warning(self, "Aviso", "Selecione um cliente.")
+            return
+        
+        self.edit_form = EditClientFormWindow(client_id)
+        self.edit_form.show()
+        self.close()
+
+class EditClientFormWindow(QWidget):
+    def __init__(self, client_id):
+        super().__init__()
+        self.client_id = client_id
+        
+        self.setWindowTitle("Editar Cliente")
+        self.setFixedSize(400, 500)
+        
+        layout = QFormLayout()
+        
+        # Criar campos
+        self.txtName = QLineEdit()
+        self.txtCNPJ = FocusAwareLineEdit()
+        self.txtCNPJ.setInputMask("00.000.000/0000-00")
+        self.txtAddress = QLineEdit()
+        self.txtIE = FocusAwareLineEdit()
+        self.txtIE.setInputMask("00000000-00")
+        self.txtCity = QLineEdit()
+        self.txtState = FocusAwareLineEdit()
+        self.txtState.setInputMask("AA")
+        self.txtCEP = FocusAwareLineEdit()
+        self.txtCEP.setInputMask("00.000-000")
+        self.txtBank = QLineEdit()
+        self.txtAgency = QLineEdit()
+        self.txtAccount = QLineEdit()
+        
+        # Adicionar ao layout
+        layout.addRow("Nome:", self.txtName)
+        layout.addRow("CNPJ:", self.txtCNPJ)
+        layout.addRow("Endereço:", self.txtAddress)
+        layout.addRow("IE:", self.txtIE)
+        layout.addRow("Cidade:", self.txtCity)
+        layout.addRow("UF:", self.txtState)
+        layout.addRow("CEP:", self.txtCEP)
+        layout.addRow("Banco:", self.txtBank)
+        layout.addRow("Agência:", self.txtAgency)
+        layout.addRow("Conta:", self.txtAccount)
+        
+        # Botões
+        btnSave = QPushButton("Salvar")
+        btnCancel = QPushButton("Cancelar")
+        
+        btnSave.clicked.connect(self.saveClient)
+        btnCancel.clicked.connect(self.close)
+        
+        layout.addRow(btnSave)
+        layout.addRow(btnCancel)
+        
+        self.setLayout(layout)
+        self.loadClientData()
+    
+    def loadClientData(self):
+        try:
+            conn = sqlite3.connect('clients.db')
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM clients WHERE id = ?', (self.client_id,))
+            client = cursor.fetchone()
+            conn.close()
+            
+            if client:
+                self.txtName.setText(client[1] or "")
+                self.txtCNPJ.setText(client[2] or "")
+                self.txtAddress.setText(client[3] or "")
+                self.txtIE.setText(client[4] or "")
+                self.txtCity.setText(client[5] or "")
+                self.txtState.setText(client[6] or "")
+                self.txtCEP.setText(client[7] or "")
+                self.txtBank.setText(client[8] or "")
+                self.txtAgency.setText(client[9] or "")
+                self.txtAccount.setText(client[10] or "")
+            
+        except sqlite3.Error as e:
+            QMessageBox.critical(self, "Erro", f"Erro ao carregar cliente: {e}")
+    
+    def saveClient(self):
+        if not self.txtName.text() or not self.txtCNPJ.text():
+            QMessageBox.warning(self, "Erro", "Nome e CNPJ são obrigatórios.")
+            return
+        
+        try:
+            conn = sqlite3.connect('clients.db')
+            cursor = conn.cursor()
+            
+            cursor.execute('''
+            UPDATE clients SET name=?, cnpj=?, address=?, ie=?, city=?, 
+                             state=?, cep=?, bank=?, agency=?, account=?
+            WHERE id=?
+            ''', (
+                self.txtName.text(),
+                self.txtCNPJ.text(),
+                self.txtAddress.text(),
+                self.txtIE.text(),
+                self.txtCity.text(),
+                self.txtState.text(),
+                self.txtCEP.text(),
+                self.txtBank.text(),
+                self.txtAgency.text(),
+                self.txtAccount.text(),
+                self.client_id
+            ))
+            
+            conn.commit()
+            conn.close()
+            
+            QMessageBox.information(self, "Sucesso", "Cliente atualizado com sucesso!")
+            self.close()
+            
+        except sqlite3.Error as e:
+            QMessageBox.critical(self, "Erro", f"Erro ao salvar: {e}")

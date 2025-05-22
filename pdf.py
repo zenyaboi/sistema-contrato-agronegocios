@@ -285,8 +285,6 @@ def createPDF(contract_data):
         additional_text(c, contract_data)
     else:
         wh_text(c, contract_data)
-    
-
 
     obs_text(c, contract_data.get('observations', ''), contract_data)
 
