@@ -519,7 +519,7 @@ class ContractSelectionWindow(QWidget):
                 FROM contracts c
                 LEFT JOIN clientsdb.clients s ON c.seller_id = s.id
                 LEFT JOIN clientsdb.clients b ON c.buyer_id = b.id
-                ORDER BY c.id DESC
+                ORDER BY c.contract_number 
             ''')
             
             contracts = cursor.fetchall()
