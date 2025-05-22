@@ -191,57 +191,106 @@ class EditClientSelectWindow(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Selecionar Cliente para Editar")
-        self.setFixedSize(600, 400)
+        self.setFixedSize(800, 600)
         
         layout = QVBoxLayout()
         
-        # ComboBox para selecionar cliente
-        self.cmbClients = QComboBox()
-        self.loadClients()
-        layout.addWidget(QLabel("Selecione o cliente:"))
-        layout.addWidget(self.cmbClients)
+        # Label de instruções
+        label = QLabel("Selecione o cliente que deseja editar:")
+        layout.addWidget(label)
+        
+        # Tabela para mostrar clientes
+        self.table = QTableWidget()
+        self.table.setColumnCount(4)
+        self.table.setHorizontalHeaderLabels([
+            "ID", "Nome", "CNPJ", "Cidade/UF"
+        ])
+        
+        # Ajustar largura das colunas
+        self.table.setColumnWidth(0, 50)   # ID
+        self.table.setColumnWidth(1, 200)  # Nome
+        self.table.setColumnWidth(2, 150)  # CNPJ
+        self.table.setColumnWidth(3, 150)  # Cidade/UF
+        
+        # Permitir seleção de apenas uma linha por vez
+        self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
+        self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        
+        layout.addWidget(self.table)
         
         # Botões
-        btnEdit = QPushButton("Editar Cliente Selecionado")
+        btn_layout = QHBoxLayout()
+        
+        btnEdit = QPushButton("Editar Selecionado")
         btnRefresh = QPushButton("Atualizar Lista")
-        btnCancel = QPushButton("Cancelar")
+        btnClose = QPushButton("Fechar")
         
-        btnEdit.clicked.connect(self.editClient)
+        btnEdit.clicked.connect(self.editSelectedClient)
         btnRefresh.clicked.connect(self.loadClients)
-        btnCancel.clicked.connect(self.close)
+        btnClose.clicked.connect(self.close)
         
-        layout.addWidget(btnEdit)
-        layout.addWidget(btnRefresh)
-        layout.addWidget(btnCancel)
+        btn_layout.addWidget(btnEdit)
+        btn_layout.addWidget(btnRefresh)
+        btn_layout.addWidget(btnClose)
         
+        layout.addLayout(btn_layout)
         self.setLayout(layout)
+        
+        # Carregar clientes ao abrir
+        self.loadClients()
     
     def loadClients(self):
-        self.cmbClients.clear()
-        self.cmbClients.addItem("Selecione um cliente...", None)
-        
         try:
             conn = sqlite3.connect('clients.db')
             cursor = conn.cursor()
-            cursor.execute('SELECT id, name FROM clients ORDER BY name')
+            
+            cursor.execute('''
+                SELECT id, name, cnpj, city, state
+                FROM clients 
+                ORDER BY id
+            ''')
+            
             clients = cursor.fetchall()
             conn.close()
             
-            for client_id, name in clients:
-                self.cmbClients.addItem(name, client_id)
+            # Limpar tabela
+            self.table.setRowCount(0)
+            
+            # Adicionar clientes à tabela
+            for row, client in enumerate(clients):
+                self.table.insertRow(row)
+                
+                # ID
+                self.table.setItem(row, 0, QTableWidgetItem(str(client[0])))
+                
+                # Nome
+                self.table.setItem(row, 1, QTableWidgetItem(client[1] or ""))
+                
+                # CNPJ
+                cnpj_item = QTableWidgetItem(client[2] or "")
+                cnpj_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                self.table.setItem(row, 2, cnpj_item)
+                
+                # Cidade/UF
+                cidade_uf = f"{client[3] or ''}/{client[4] or ''}"
+                self.table.setItem(row, 3, QTableWidgetItem(cidade_uf))
                 
         except sqlite3.Error as e:
             QMessageBox.critical(self, "Erro", f"Erro ao carregar clientes: {e}")
     
-    def editClient(self):
-        client_id = self.cmbClients.currentData()
-        if not client_id:
-            QMessageBox.warning(self, "Aviso", "Selecione um cliente.")
+    def editSelectedClient(self):
+        current_row = self.table.currentRow()
+        if current_row < 0:
+            QMessageBox.warning(self, "Aviso", "Selecione um cliente para editar.")
             return
         
-        self.edit_form = EditClientFormWindow(client_id)
-        self.edit_form.show()
-        self.close()
+        try:
+            client_id = int(self.table.item(current_row, 0).text())
+            self.edit_window = EditClientFormWindow(client_id)
+            self.edit_window.show()
+            self.close()
+        except Exception as e:
+            QMessageBox.critical(self, "Erro", f"Falha ao abrir editor: {str(e)}")
 
 class EditClientFormWindow(QWidget):
     def __init__(self, client_id):
