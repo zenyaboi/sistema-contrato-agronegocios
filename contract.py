@@ -281,7 +281,7 @@ class ContractWindow(QWidget):
         try:
             conn = sqlite3.connect('clients.db')
             cursor = conn.cursor()
-            cursor.execute('SELECT id, name FROM clients')  # Removido o filtro por tipo
+            cursor.execute('SELECT id, name, city FROM clients')  # Removido o filtro por tipo
             clients = cursor.fetchall()
             conn.close()
 
@@ -291,7 +291,17 @@ class ContractWindow(QWidget):
 
             # Adicionar clientes ao combobox
             for client in clients:
-                combo_box.addItem(client[1], client[0])  # Nome do cliente e ID
+                client_id = client[0]
+                client_name = client[1]
+                client_city = client[2] if client[2] else ""
+
+                if client_city:
+                    display_text = f"{client_name} ({client_city})"
+                else:
+                    display_text = client_name
+                
+                combo_box.addItem(display_text, client_id)
+
         except sqlite3.Error as e:
             QMessageBox.critical(self, "Erro", f"Erro ao carregar clientes: {e}")
 
