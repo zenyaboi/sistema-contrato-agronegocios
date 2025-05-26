@@ -165,7 +165,7 @@ def sb_co_text(c, contract_data):
     add_wrapped_text(c, 80, 792, f"{contract_data['product']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 162, 791, f"{contract_data['harvest']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 229, 791, f"{contract_data['umidade_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
-    add_wrapped_text(c, 290, 791, f"{contract_data['impureza_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 291, 791, f"{contract_data['impureza_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 359, 791, f"{contract_data['ardidos_avariados']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
 
     add_wrapped_text(c, 150, 556, f"{contract_data['quantity']} MÉTRICAS", 9, max_width=200, line_height=1)
@@ -217,17 +217,17 @@ def additional_text(c, contract_data):
     field_values = field_values + [""] * (5 - len(field_values))
     
     # Nomes dos campos (mantendo as posições exatas)
-    add_wrapped_text(c, 55, 708, field_keys[0], 9, max_width=80, line_height=1, alignment="center")
-    add_wrapped_text(c, 150, 708, field_keys[1], 9, max_width=60, line_height=1, alignment="center")
-    add_wrapped_text(c, 213, 708, field_keys[2], 9, max_width=60, line_height=1, alignment="center")
-    add_wrapped_text(c, 278, 708, field_keys[3], 9, max_width=60, line_height=1, alignment="center")
-    add_wrapped_text(c, 344, 708, field_keys[4], 9, max_width=60, line_height=1, alignment="center")
+    add_wrapped_text(c, 80, 708, field_keys[0], 9, max_width=80, line_height=1, alignment="center")
+    add_wrapped_text(c, 162, 708, field_keys[1], 9, max_width=60, line_height=1, alignment="center")
+    add_wrapped_text(c, 229, 708, field_keys[2], 9, max_width=60, line_height=1, alignment="center")
+    add_wrapped_text(c, 291, 708, field_keys[3], 9, max_width=60, line_height=1, alignment="center")
+    add_wrapped_text(c, 359, 708, field_keys[4], 9, max_width=60, line_height=1, alignment="center")
 
     # Valores dos campos (mantendo as posições exatas)
     add_wrapped_text(c, 80, 679, str(field_values[0]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 162, 678, str(field_values[1]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 229, 678, str(field_values[2]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
-    add_wrapped_text(c, 290, 678, str(field_values[3]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 291, 678, str(field_values[3]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 359, 678, str(field_values[4]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
 
 def obs_text(c, obs_text, contract_data):
