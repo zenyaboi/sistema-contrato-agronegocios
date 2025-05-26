@@ -461,8 +461,6 @@ class ContractWindow(QWidget):
         finally:
             conn.close()
 
-# Adicione estas classes ao seu arquivo contract.py
-
 class ContractSelectionWindow(QWidget):
     def __init__(self):
         super().__init__()

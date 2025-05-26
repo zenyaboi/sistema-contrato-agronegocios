@@ -107,14 +107,38 @@ def add_wrapped_text(canvas, x, y, text, font_size, font_name="Helvetica-Bold",
         canvas.drawString(x, y, text[:50] + "...")
         return line_height
 
+def format_date_extended(date_str):
+    months = {
+        '01': 'Janeiro', '02': 'Fevereiro', '03': 'Março', '04': 'Abril',
+        '05': 'Maio', '06': 'Junho', '07': 'Julho', '08': 'Agosto',
+        '09': 'Setembro', '10': 'Outubro', '11': 'Novembro', '12': 'Dezembro'
+    }
+    
+    try:
+        if '/' in date_str:
+            day, month, year = date_str.split('/')
+            
+            day = str(int(day))
+            
+            month_name = months.get(month, f"Mês{month}")
+            
+            return f"{day} de {month_name} de {year}"
+        else:
+            return date_str 
+            
+    except (ValueError, IndexError):
+        return date_str
+
 def info_text(c, contract_data):
     seller = get_client_data(contract_data["seller_id"])
     buyer = get_client_data(contract_data["buyer_id"])
     year = get_separate_date(contract_data["contract_date"])
 
+    formatted_date = format_date_extended(contract_data["contract_date"])
+
     # contract info
     add_overlay_text(c, 130, 648, f"{contract_data['contract_number']}/{contract_data['contract_type']}/{year}", 10)
-    add_overlay_text(c, 325, 648, f"{contract_data['contract_date']}", 10)
+    add_overlay_text(c, 325, 648, formatted_date, 10)
 
     # seller info
     add_overlay_text(c, 115, 613, f"{seller['name']}", 10)
@@ -141,7 +165,7 @@ def sb_co_text(c, contract_data):
     add_wrapped_text(c, 80, 792, f"{contract_data['product']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 155, 791, f"{contract_data['harvest']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 225, 791, f"{contract_data['umidade_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
-    add_wrapped_text(c, 285, 791, f"{contract_data['impureza_maxima']}%", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 285, 791, f"{contract_data['impureza_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 359, 791, f"{contract_data['ardidos_avariados']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
 
     add_wrapped_text(c, 150, 556, f"{contract_data['quantity']} MÉTRICAS", 9, max_width=200, line_height=1)
