@@ -141,13 +141,13 @@ def info_text(c, contract_data):
     add_overlay_text(c, 325, 648, formatted_date, 10)
 
     # seller info
-    add_overlay_text(c, 115, 613, f"{seller['name']}", 10)
+    add_overlay_text(c, 117, 613, f"{seller['name']}", 10)
     add_overlay_text(c, 155, 595, f"{seller['cnpj']}", 10)
     add_overlay_text(c, 333, 595, f"{seller['ie']}", 10)
     add_overlay_text(c, 170, 577, f"{seller['address']}", 10)
     add_overlay_text(c, 158, 559, f"{seller['city']}", 10)
     add_overlay_text(c, 336, 559, f"{seller['state']}", 10)
-    add_overlay_text(c, 145, 541, f"BRASIL", 10)
+    add_overlay_text(c, 160, 541, f"BRASIL", 10)
     add_overlay_text(c, 345, 541, f"{seller['cep']}", 10)
 
     # buyer info
@@ -163,9 +163,9 @@ def info_text(c, contract_data):
 def sb_co_text(c, contract_data):
     # product info (SB/CO)
     add_wrapped_text(c, 80, 792, f"{contract_data['product']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
-    add_wrapped_text(c, 155, 791, f"{contract_data['harvest']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
-    add_wrapped_text(c, 225, 791, f"{contract_data['umidade_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
-    add_wrapped_text(c, 285, 791, f"{contract_data['impureza_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 162, 791, f"{contract_data['harvest']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 229, 791, f"{contract_data['umidade_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 290, 791, f"{contract_data['impureza_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 359, 791, f"{contract_data['ardidos_avariados']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
 
     add_wrapped_text(c, 150, 556, f"{contract_data['quantity']} MÉTRICAS", 9, max_width=200, line_height=1)
@@ -224,10 +224,10 @@ def additional_text(c, contract_data):
     add_wrapped_text(c, 344, 708, field_keys[4], 9, max_width=60, line_height=1, alignment="center")
 
     # Valores dos campos (mantendo as posições exatas)
-    add_wrapped_text(c, 40, 679, str(field_values[0]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
-    add_wrapped_text(c, 155, 678, str(field_values[1]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
-    add_wrapped_text(c, 225, 678, str(field_values[2]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
-    add_wrapped_text(c, 285, 678, str(field_values[3]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 80, 679, str(field_values[0]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 162, 678, str(field_values[1]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 229, 678, str(field_values[2]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
+    add_wrapped_text(c, 290, 678, str(field_values[3]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 359, 678, str(field_values[4]), 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
 
 def obs_text(c, obs_text, contract_data):
