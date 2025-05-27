@@ -244,7 +244,7 @@ def obs_text(c, obs_text, contract_data):
     if (isSb):
         y = 454
     else:
-        y = 495
+        y = 490
     
     obs_list = [line.strip() for line in obs_text.split('\n') if line.strip()]
 
