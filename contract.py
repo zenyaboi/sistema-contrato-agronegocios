@@ -484,18 +484,20 @@ class ContractSelectionWindow(QWidget):
         
         try:
             contract_id = int(self.table.item(current_row, 0).text())
-            self.edit_window = ContractEditWindow(contract_id)
+            contract_number = self.table.item(current_row, 1).text()
+            contract_type = self.table.item(current_row, 2).text()
+            self.edit_window = ContractEditWindow(contract_id, contract_number, contract_type)
             self.edit_window.show()
             self.close()
         except Exception as e:
             QMessageBox.critical(self, "Erro", f"Falha ao abrir editor: {str(e)}")
 
 class ContractEditWindow(ContractWindow):
-    def __init__(self, contract_id):
+    def __init__(self, contract_id, contract_number, contract_type):
         try:
             self.contract_id = contract_id
             super().__init__()
-            self.setWindowTitle(f"Editar Contrato - ID: {contract_id}")
+            self.setWindowTitle(f"Editar Contrato - Contrato: {contract_number}/{contract_type}")
             self.loadContractData()
         except Exception as e:
             QMessageBox.critical(None, "Erro", f"Falha ao inicializar editor: {str(e)}")
