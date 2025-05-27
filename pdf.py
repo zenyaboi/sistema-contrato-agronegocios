@@ -141,7 +141,7 @@ def info_text(c, contract_data):
     add_overlay_text(c, 293, 648, f"Curitiba, {formatted_date}", 10)
 
     # seller info
-    add_overlay_text(c, 117, 613, f"{seller['name']}", 10)
+    add_overlay_text(c, 117, 614, f"{seller['name']}", 10)
     add_overlay_text(c, 155, 595, f"{seller['cnpj']}", 10)
     add_overlay_text(c, 333, 595, f"{seller['ie']}", 10)
     add_overlay_text(c, 170, 577, f"{seller['address']}", 10)
@@ -151,12 +151,12 @@ def info_text(c, contract_data):
     add_overlay_text(c, 345, 541, f"{seller['cep']}", 10)
 
     # buyer info
-    add_overlay_text(c, 125, 502, f"{buyer['name']}", 10)
+    add_overlay_text(c, 125, 503, f"{buyer['name']}", 10)
     add_overlay_text(c, 160, 487, f"{buyer['cnpj']}", 10)
     add_overlay_text(c, 338, 487, f"{buyer['ie']}", 10)
     add_overlay_text(c, 174, 469, f"{buyer['address']}", 10)
     add_overlay_text(c, 165, 452, f"{buyer['city']}", 10)
-    add_overlay_text(c, 335, 452, f"{buyer['state']}", 10)
+    add_overlay_text(c, 336, 452, f"{buyer['state']}", 10)
     add_overlay_text(c, 160, 434, f"BRASIL", 10)
     add_overlay_text(c, 343, 434, f"{buyer['cep']}", 10)
 
@@ -202,7 +202,7 @@ def additional_text(c, contract_data):
         yValue = 678
     else:
         yName = 748
-        yValue = 715
+        yValue = 717
 
     if 'additional_fields' not in contract_data:
         return
