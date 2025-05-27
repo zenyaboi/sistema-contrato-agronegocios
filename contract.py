@@ -217,6 +217,9 @@ class ContractWindow(QWidget):
         self.txtStateDelivPlace.setInputMask("AA")
         layout.addRow("Estado do lugar de entrega/retirada:", self.txtStateDelivPlace)
 
+        self.textCommission = QLineEdit(page)
+        layout.addRow("Comissão:", self.textCommission)
+
         page.setLayout(layout)
         return page
 
@@ -283,7 +286,8 @@ class ContractWindow(QWidget):
             "delivery": self.txtDelivery.text(),
             "observations": self.txtObservations.toPlainText(),
             "delivPlace": self.txtDelivPlace.text(),
-            "stateDelivPlace": self.txtStateDelivPlace.text()
+            "stateDelivPlace": self.txtStateDelivPlace.text(),
+            "commission": self.textCommission.text(),
         }
 
         quality_params = {}
@@ -333,7 +337,7 @@ class ContractWindow(QWidget):
             "contract_number", "contract_type", "contract_date",
             "seller_id", "buyer_id", "product", "harvest",
             "quantity", "price", "payment", "weight_quality",
-            "delivery", "observations", "delivPlace", "stateDelivPlace"
+            "delivery", "observations", "delivPlace", "stateDelivPlace", "commission"
         ]
         values = [
             contract_data["contract_number"],
@@ -350,7 +354,8 @@ class ContractWindow(QWidget):
             contract_data["delivery"],
             contract_data["observations"],
             contract_data["delivPlace"],
-            contract_data["stateDelivPlace"]
+            contract_data["stateDelivPlace"],
+            contract_data["commission"]
         ]
 
         if contract_type in ("SB", "CO"):
@@ -548,6 +553,7 @@ class ContractEditWindow(ContractWindow):
             self.txtDelivery.setText(contract_dict.get('delivery', ''))
             self.txtDelivPlace.setText(contract_dict.get('delivPlace', ''))
             self.txtStateDelivPlace.setText(contract_dict.get('stateDelivPlace', ''))
+            self.textCommission.setText(contract_dict.get('commission', ''))
             
             self.txtObservations.setPlainText(contract_dict.get('observations', ''))
             
@@ -629,7 +635,8 @@ class ContractEditWindow(ContractWindow):
             "delivery": self.txtDelivery.text(),
             "observations": self.txtObservations.toPlainText(),
             "delivPlace": self.txtDelivPlace.text(),
-            "stateDelivPlace": self.txtStateDelivPlace.text()
+            "stateDelivPlace": self.txtStateDelivPlace.text(),
+            "commission": self.textCommission.text(),
         }
 
         quality_params = {}
@@ -688,11 +695,6 @@ class ContractEditWindow(ContractWindow):
                 update_fields.append(f"{field} = ?")
                 update_values.append(quality_params.get(field, ""))
             
-            wheat_fields = ["falling_number", "pl_minimo", "ph", "w_minimo", "triguilho"]
-            for field in wheat_fields:
-                update_fields.append(f"{field} = ?")
-                update_values.append("")
-                
         elif contract_type == "WH":
             wheat_fields = ["falling_number", "impureza_maxima", "umidade_maxima", 
                            "pl_minimo", "ph", "w_minimo", "triguilho"]

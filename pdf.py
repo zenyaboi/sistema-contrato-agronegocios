@@ -265,7 +265,7 @@ def payment_info_text(c, contract_data):
     add_wrapped_text(c, 298, 679, f"{seller['cnpj']}", 7, max_width=100, line_height=1)
     add_wrapped_text(c, 138, 661, f"CIF {contract_data['delivPlace']}", 7, max_width=150, line_height=1)
     add_wrapped_text(c, 290, 661, f"{contract_data['stateDelivPlace']}", 7, max_width=100, line_height=1)
-    add_overlay_text(c, 138, 636, f"0,20% sobre o valor da operação, a ser pago pela Vendedora", 7)
+    add_overlay_text(c, 138, 636, f"{contract_data['commission']} sobre o valor da operação, a ser pago pela Vendedora", 7)
 
 def signing_text(c, contract_data):
     seller = get_client_data(contract_data['seller_id'])

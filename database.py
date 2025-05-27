@@ -56,6 +56,7 @@ def create_contracts_db():
             observations TEXT,
             delivPlace TEXT,
             stateDelivPlace TEXT,
+            commission TEXT,
             umidade_maxima TEXT,
             impureza_maxima TEXT,
             ardidos_avariados TEXT,
@@ -76,7 +77,7 @@ def create_contracts_db():
         existing_columns = [column[1] for column in cursor.fetchall()]
         
         columns_to_add = [
-            ('additional_fields', 'TEXT')
+            ('additional_fields', 'TEXT'), ('commission', 'TEXT')
         ]
         
         for column, col_type in columns_to_add:
