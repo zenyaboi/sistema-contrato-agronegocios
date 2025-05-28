@@ -475,14 +475,17 @@ class ContractSelectionWindow(QWidget):
         
         btn_layout = QHBoxLayout()
         btnEdit = QPushButton("Editar Selecionado")
+        btnDelete = QPushButton("Excluir Selecionado")
         btnRefresh = QPushButton("Atualizar Lista")
         btnClose = QPushButton("Fechar")
         
         btnEdit.clicked.connect(self.editSelectedContract)
+        btnDelete.clicked.connect(self.deleteSelectedContract)
         btnRefresh.clicked.connect(self.loadContracts)
         btnClose.clicked.connect(self.close)
         
         btn_layout.addWidget(btnEdit)
+        btn_layout.addWidget(btnDelete)
         btn_layout.addWidget(btnRefresh)
         btn_layout.addWidget(btnClose)
         layout.addLayout(btn_layout)
@@ -530,6 +533,37 @@ class ContractSelectionWindow(QWidget):
             self.close()
         except Exception as e:
             QMessageBox.critical(self, "Erro", f"Falha ao abrir editor: {str(e)}")
+    
+    def deleteSelectedContract(self):
+        current_row = self.table.currentRow()
+        if current_row < 0:
+            QMessageBox.warning(self, "Aviso", "Selecione um contrato para excluir.")
+            return
+        
+        try:
+            contract_id = int(self.table.item(current_row, 0).text())
+            contract_number = self.table.item(current_row, 1).text()
+            
+            # Confirmar com o usuário
+            reply = QMessageBox.question(
+                self, 
+                "Confirmar Exclusão",
+                f"Tem certeza que deseja excluir o contrato {contract_number}?\nEsta ação não pode ser desfeita.",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            
+            if reply == QMessageBox.StandardButton.Yes:
+                conn = sqlite3.connect('contracts.db')
+                cursor = conn.cursor()
+                cursor.execute('DELETE FROM contracts WHERE id = ?', (contract_id,))
+                conn.commit()
+                conn.close()
+                
+                QMessageBox.information(self, "Sucesso", "Contrato excluído com sucesso.")
+                self.loadContracts()  # Atualizar a lista
+        
+        except Exception as e:
+            QMessageBox.critical(self, "Erro", f"Falha ao excluir contrato: {str(e)}")
 
 class ContractEditWindow(ContractWindow):
     def __init__(self, contract_id, contract_number, contract_type):

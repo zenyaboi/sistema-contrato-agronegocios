@@ -222,14 +222,17 @@ class EditClientSelectWindow(QWidget):
         btn_layout = QHBoxLayout()
         
         btnEdit = QPushButton("Editar Selecionado")
+        btnDelete = QPushButton("Excluir Selecionado")
         btnRefresh = QPushButton("Atualizar Lista")
         btnClose = QPushButton("Fechar")
         
         btnEdit.clicked.connect(self.editSelectedClient)
+        btnDelete.clicked.connect(self.deleteSelectedClient)
         btnRefresh.clicked.connect(self.loadClients)
         btnClose.clicked.connect(self.close)
         
         btn_layout.addWidget(btnEdit)
+        btn_layout.addWidget(btnDelete)
         btn_layout.addWidget(btnRefresh)
         btn_layout.addWidget(btnClose)
         
@@ -291,6 +294,52 @@ class EditClientSelectWindow(QWidget):
             self.close()
         except Exception as e:
             QMessageBox.critical(self, "Erro", f"Falha ao abrir editor: {str(e)}")
+    
+    def deleteSelectedClient(self):
+        current_row = self.table.currentRow()
+        if current_row < 0:
+            QMessageBox.warning(self, "Aviso", "Selecione um cliente para excluir.")
+            return
+        
+        try:
+            client_id = int(self.table.item(current_row, 0).text())
+            client_name = self.table.item(current_row, 1).text()
+            
+            # Verificar se o cliente está em algum contrato
+            conn = sqlite3.connect('contracts.db')
+            cursor = conn.cursor()
+            cursor.execute('SELECT COUNT(*) FROM contracts WHERE seller_id = ? OR buyer_id = ?', (client_id, client_id))
+            contract_count = cursor.fetchone()[0]
+            conn.close()
+            
+            if contract_count > 0:
+                QMessageBox.warning(
+                    self,
+                    "Não é possível excluir",
+                    f"Este cliente está vinculado a {contract_count} contrato(s).\nRemova os contratos primeiro."
+                )
+                return
+            
+            # Confirmar com o usuário
+            reply = QMessageBox.question(
+                self, 
+                "Confirmar Exclusão",
+                f"Tem certeza que deseja excluir o cliente {client_name}?\nEsta ação não pode ser desfeita.",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            
+            if reply == QMessageBox.StandardButton.Yes:
+                conn = sqlite3.connect('clients.db')
+                cursor = conn.cursor()
+                cursor.execute('DELETE FROM clients WHERE id = ?', (client_id,))
+                conn.commit()
+                conn.close()
+                
+                QMessageBox.information(self, "Sucesso", "Cliente excluído com sucesso.")
+                self.loadClients()  # Atualizar a lista
+        
+        except Exception as e:
+            QMessageBox.critical(self, "Erro", f"Falha ao excluir cliente: {str(e)}")
 
 class EditClientFormWindow(QWidget):
     def __init__(self, client_id):
