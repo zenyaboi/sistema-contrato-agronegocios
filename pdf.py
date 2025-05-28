@@ -282,10 +282,10 @@ def signing_text(c, contract_data):
     seller = get_client_data(contract_data['seller_id'])
     buyer = get_client_data(contract_data['buyer_id'])
 
-    vendedor_height = add_wrapped_text(c, 60, 160, f"{seller['name']}", 7, max_width=180, line_height=1)
-    add_wrapped_text(c, 60, 160 - vendedor_height * 6 - 5, f"CNPJ: {seller['cnpj']}", 7, max_width=200, line_height=1)
-    comprador_height = add_wrapped_text(c, 375, 160, f"{buyer['name']}", 7, max_width=180, line_height=1)
-    add_wrapped_text(c, 375, 160 - comprador_height * 6 - 5, f"CNPJ: {buyer['cnpj']}", 7, max_width=200, line_height=1)
+    vendedor_height = add_wrapped_text(c, 60, 155, f"{seller['name']}", 7, max_width=180, line_height=1)
+    add_wrapped_text(c, 60, 155 - vendedor_height * 6 - 5, f"CNPJ: {seller['cnpj']}", 7, max_width=200, line_height=1)
+    comprador_height = add_wrapped_text(c, 375, 155, f"{buyer['name']}", 7, max_width=180, line_height=1)
+    add_wrapped_text(c, 375, 155 - comprador_height * 6 - 5, f"CNPJ: {buyer['cnpj']}", 7, max_width=200, line_height=1)
 
 def createPDF(contract_data, parent_window=None):
     isSb = "SB" in contract_data['contract_type'] or "CO" in contract_data['contract_type']
