@@ -4,8 +4,18 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 import sqlite3
 import json
+import os
+import sys
 
-isSb = False
+def resource_path(relative_path):
+    if hasattr(sys, '_MEIPASS'):
+        # Se está rodando no executável PyInstaller
+        base_path = sys._MEIPASS
+    else:
+        # Se está rodando no script Python normal
+        base_path = os.path.abspath(".")
+    
+    return os.path.join(base_path, relative_path)
 
 def get_client_data(client_id):
     conn = sqlite3.connect('clients.db')
@@ -283,20 +293,20 @@ def createPDF(contract_data):
     buyer = get_client_data(contract_data["buyer_id"])
     year = get_separate_date(contract_data["contract_date"])
     
-    filename = f"CTRVend_{contract_data['contract_number']}{contract_data["contract_type"]}{year} - {seller['name']} x {buyer['name']}.pdf"
+    filename = f"CTRVend_{contract_data['contract_number']}{contract_data['contract_type']}{year} - {seller['name']} x {buyer['name']}.pdf"
 
     # Background images path
-    image_page1 = "CONTRATO MODELO SB & CO_page-0001.jpg"
+    image_page1 = resource_path("CONTRATO MODELO SB & CO_page-0001.jpg")
 
     if (isSb):
         # SB/CO model
-        image_page2 = "CONTRATO MODELO SB & CO_page-0002.jpg"
+        image_page2 = resource_path("CONTRATO MODELO SB & CO_page-0002.jpg")
     else:
         # WH model
-        image_page2 = "CONTRATO MODELO WH_page-0002.jpg"
+        image_page2 = resource_path("CONTRATO MODELO WH_page-0002.jpg")
 
-    image_page3 = "CONTRATO MODELO SB & CO_page-0003.jpg"
-    image_page4 = "CONTRATO MODELO SB & CO_page-0004.jpg"
+    image_page3 = resource_path("CONTRATO MODELO SB & CO_page-0003.jpg")
+    image_page4 = resource_path("CONTRATO MODELO SB & CO_page-0004.jpg")
 
     # Create a PDF using canvas
     c = canvas.Canvas(filename, pagesize=A4)
@@ -341,4 +351,17 @@ def createPDF(contract_data):
     print("created pdf file")
 
 if __name__ == "__main__":
-    createPDF("output.pdf")
+    contract_data = {
+        "seller_id": 1,
+        "buyer_id": 2,
+        "contract_number": "123",
+        "contract_type": "SB",
+        "contract_date": "01/01/2023",
+        "product": "Soja",
+        "harvest": "2023/2024",
+        "quantity": "100",
+        "price": "150,00",
+        "delivery": "Entrega em até 30 dias",
+        "observations": "Teste de contrato",
+    }
+    createPDF("contract_data")
