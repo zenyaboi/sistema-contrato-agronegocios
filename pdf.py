@@ -2,6 +2,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
+from PyQt6.QtWidgets import QFileDialog
 import sqlite3
 import json
 import os
@@ -286,14 +287,27 @@ def signing_text(c, contract_data):
     comprador_height = add_wrapped_text(c, 375, 160, f"{buyer['name']}", 7, max_width=180, line_height=1)
     add_wrapped_text(c, 375, 160 - comprador_height * 6 - 5, f"CNPJ: {buyer['cnpj']}", 7, max_width=200, line_height=1)
 
-def createPDF(contract_data):
+def createPDF(contract_data, parent_window=None):
     isSb = "SB" in contract_data['contract_type'] or "CO" in contract_data['contract_type']
 
     seller = get_client_data(contract_data["seller_id"])
     buyer = get_client_data(contract_data["buyer_id"])
     year = get_separate_date(contract_data["contract_date"])
     
-    filename = f"CTRVend_{contract_data['contract_number']}{contract_data['contract_type']}{year} - {seller['name']} x {buyer['name']}.pdf"
+    default_filename = f"CTRVend_{contract_data['contract_number']}{contract_data['contract_type']}{year} - {seller['name']} x {buyer['name']}.pdf"
+
+    if (parent_window):
+        file_path, _ = QFileDialog.getSaveFileName(
+            parent_window,
+            "Salvar Contrato como PDF",
+            default_filename,
+            "Arquivos PDF (*.pdf);;Todos os arquivos (*)"
+        )
+
+        if (not file_path):
+            return None
+    else:
+        file_path = default_filename
 
     # Background images path
     image_page1 = resource_path("CONTRATO MODELO SB & CO_page-0001.jpg")
@@ -309,7 +323,7 @@ def createPDF(contract_data):
     image_page4 = resource_path("CONTRATO MODELO SB & CO_page-0004.jpg")
 
     # Create a PDF using canvas
-    c = canvas.Canvas(filename, pagesize=A4)
+    c = canvas.Canvas(file_path, pagesize=A4)
 
     print(c.getAvailableFonts())
 
@@ -348,7 +362,8 @@ def createPDF(contract_data):
 
     # Save the PDF
     c.save()
-    print("created pdf file")
+    print(f"created pdf file in: {file_path}")
+    return file_path
 
 if __name__ == "__main__":
     contract_data = {

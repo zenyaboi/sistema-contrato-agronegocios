@@ -398,7 +398,11 @@ class ContractWindow(QWidget):
             pdf_data = {**contract_data, **quality_params}
             if additional_fields:
                 pdf_data["additional_fields"] = additional_fields
-            createPDF(pdf_data)
+            pdf_path = createPDF(pdf_data, self)
+            if (pdf_path):
+                QMessageBox.information(self, "Sucesso", f"Contrato salvo com sucesso!\nArquivo: {pdf_path}")
+            else:
+                QMessageBox.warning(self, "Aviso", "Geração do PDF cancelada pelo usuário.")
             
             QMessageBox.information(self, "Sucesso", "Contrato salvo com sucesso!")
             self.close()
@@ -728,7 +732,11 @@ class ContractEditWindow(ContractWindow):
             pdf_data = {**contract_data, **quality_params}
             if additional_fields:
                 pdf_data["additional_fields"] = additional_fields
-            createPDF(pdf_data)
+            pdf_path = createPDF(pdf_data, self)
+            if (pdf_path):
+                QMessageBox.information(self, "Sucesso", f"Contrato salvo com sucesso!\nArquivo: {pdf_path}")
+            else:
+                QMessageBox.warning(self, "Aviso", "Geração do PDF cancelada pelo usuário.")
             
             QMessageBox.information(self, "Sucesso", "Contrato atualizado com sucesso!")
             self.close()
