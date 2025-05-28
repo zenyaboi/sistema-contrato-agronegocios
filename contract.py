@@ -385,33 +385,68 @@ class ContractWindow(QWidget):
             values.append(json.dumps(additional_fields))
 
         try:
-            conn = sqlite3.connect('contracts.db')
-            cursor = conn.cursor()
-            
-            query = f'''
-            INSERT INTO contracts ({", ".join(columns)})
-            VALUES ({", ".join(["?"]*len(columns))})
-            '''
-            cursor.execute(query, values)
-            conn.commit()
-            
             pdf_data = {**contract_data, **quality_params}
             if additional_fields:
                 pdf_data["additional_fields"] = additional_fields
+                
             pdf_path = createPDF(pdf_data, self)
-            if (pdf_path):
-                QMessageBox.information(self, "Sucesso", f"Contrato salvo com sucesso!\nArquivo: {pdf_path}")
-            else:
-                QMessageBox.warning(self, "Aviso", "Geração do PDF cancelada pelo usuário.")
-            
-            QMessageBox.information(self, "Sucesso", "Contrato salvo com sucesso!")
-            self.close()
-        except sqlite3.Error as e:
-            QMessageBox.critical(self, "Erro", f"Erro ao salvar contrato: {e}")
+            if not pdf_path:  # Usuário cancelou
+                return
+
+            # 2. Se PDF gerado com sucesso, salvar no banco
+            try:
+                conn = sqlite3.connect('contracts.db')
+                cursor = conn.cursor()
+                
+                columns = list(contract_data.keys())
+                values = list(contract_data.values())
+                
+                if contract_type in ("SB", "CO"):
+                    columns.extend(["umidade_maxima", "impureza_maxima", "ardidos_avariados"])
+                    values.extend([
+                        quality_params.get("umidade_maxima", ""),
+                        quality_params.get("impureza_maxima", ""),
+                        quality_params.get("ardidos_avariados", "")
+                    ])
+                elif contract_type == "WH":
+                    columns.extend([
+                        "falling_number", "impureza_maxima", "umidade_maxima",
+                        "pl_minimo", "ph", "w_minimo", "triguilho"
+                    ])
+                    values.extend([
+                        quality_params.get("falling_number", ""),
+                        quality_params.get("impureza_maxima", ""),
+                        quality_params.get("umidade_maxima", ""),
+                        quality_params.get("pl_minimo", ""),
+                        quality_params.get("ph", ""),
+                        quality_params.get("w_minimo", ""),
+                        quality_params.get("triguilho", "")
+                    ])
+
+                if additional_fields:
+                    columns.append("additional_fields")
+                    values.append(json.dumps(additional_fields))
+
+                query = f'INSERT INTO contracts ({", ".join(columns)}) VALUES ({", ".join(["?"]*len(columns))})'
+                cursor.execute(query, values)
+                conn.commit()
+                
+                QMessageBox.information(self, "Sucesso", f"Contrato salvo com sucesso!\nPDF gerado em:\n{pdf_path}")
+                self.close()
+                
+            except sqlite3.Error as e:
+                QMessageBox.critical(self, "Erro", f"Erro ao salvar no banco de dados: {e}")
+                try:
+                    if os.path.exists(pdf_path):
+                        os.remove(pdf_path)
+                except:
+                    pass
+                
         except Exception as e:
-            QMessageBox.critical(self, "Erro", f"Erro ao gerar PDF: {e}")
+            QMessageBox.critical(self, "Erro", f"Falha ao gerar PDF: {str(e)}")
         finally:
-            conn.close()
+            if 'conn' in locals():
+                conn.close()
 
 class ContractSelectionWindow(QWidget):
     def __init__(self):
@@ -723,27 +758,65 @@ class ContractEditWindow(ContractWindow):
         update_values.append(self.contract_id)
         
         try:
-            conn = sqlite3.connect('contracts.db')
-            cursor = conn.cursor()
-            query = f"UPDATE contracts SET {', '.join(update_fields)} WHERE id = ?"
-            cursor.execute(query, update_values)
-            conn.commit()
-            
             pdf_data = {**contract_data, **quality_params}
             if additional_fields:
                 pdf_data["additional_fields"] = additional_fields
+                
             pdf_path = createPDF(pdf_data, self)
-            if (pdf_path):
-                QMessageBox.information(self, "Sucesso", f"Contrato salvo com sucesso!\nArquivo: {pdf_path}")
-            else:
-                QMessageBox.warning(self, "Aviso", "Geração do PDF cancelada pelo usuário.")
-            
-            QMessageBox.information(self, "Sucesso", "Contrato atualizado com sucesso!")
-            self.close()
-            
-        except sqlite3.Error as e:
-            QMessageBox.critical(self, "Erro", f"Erro ao atualizar contrato: {e}")
+            if not pdf_path:  # Usuário cancelou
+                return
+
+            # 2. Se PDF gerado com sucesso, salvar no banco
+            try:
+                conn = sqlite3.connect('contracts.db')
+                cursor = conn.cursor()
+                
+                columns = list(contract_data.keys())
+                values = list(contract_data.values())
+                
+                if contract_type in ("SB", "CO"):
+                    columns.extend(["umidade_maxima", "impureza_maxima", "ardidos_avariados"])
+                    values.extend([
+                        quality_params.get("umidade_maxima", ""),
+                        quality_params.get("impureza_maxima", ""),
+                        quality_params.get("ardidos_avariados", "")
+                    ])
+                elif contract_type == "WH":
+                    columns.extend([
+                        "falling_number", "impureza_maxima", "umidade_maxima",
+                        "pl_minimo", "ph", "w_minimo", "triguilho"
+                    ])
+                    values.extend([
+                        quality_params.get("falling_number", ""),
+                        quality_params.get("impureza_maxima", ""),
+                        quality_params.get("umidade_maxima", ""),
+                        quality_params.get("pl_minimo", ""),
+                        quality_params.get("ph", ""),
+                        quality_params.get("w_minimo", ""),
+                        quality_params.get("triguilho", "")
+                    ])
+
+                if additional_fields:
+                    columns.append("additional_fields")
+                    values.append(json.dumps(additional_fields))
+
+                query = f'INSERT INTO contracts ({", ".join(columns)}) VALUES ({", ".join(["?"]*len(columns))})'
+                cursor.execute(query, values)
+                conn.commit()
+                
+                QMessageBox.information(self, "Sucesso", f"Contrato salvo com sucesso!\nPDF gerado em:\n{pdf_path}")
+                self.close()
+                
+            except sqlite3.Error as e:
+                QMessageBox.critical(self, "Erro", f"Erro ao salvar no banco de dados: {e}")
+                try:
+                    if os.path.exists(pdf_path):
+                        os.remove(pdf_path)
+                except:
+                    pass
+                
         except Exception as e:
-            QMessageBox.critical(self, "Erro", f"Erro ao gerar PDF: {e}")
+            QMessageBox.critical(self, "Erro", f"Falha ao gerar PDF: {str(e)}")
         finally:
-            conn.close()
+            if 'conn' in locals():
+                conn.close()
