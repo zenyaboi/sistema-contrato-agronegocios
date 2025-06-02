@@ -722,7 +722,7 @@ class ContractEditWindow(ContractWindow):
         if not self.cmbSeller.currentData() or not self.cmbBuyer.currentData():
             QMessageBox.warning(self, "Erro", "Selecione vendedor e comprador.")
             return
-        
+
         contract_type = self.cmbType.currentText()
         contract_data = {
             "contract_number": self.txtContractNumber.text(),
@@ -799,17 +799,20 @@ class ContractEditWindow(ContractWindow):
                 update_fields.append(f"{field} = ?")
                 update_values.append(quality_params.get(field, ""))
             
+            wheat_fields = ["falling_number", "pl_minimo", "ph", "w_minimo", "triguilho"]
+            for field in wheat_fields:
+                update_fields.append(f"{field} = ?")
+                update_values.append("")
+            
         elif contract_type == "WH":
             wheat_fields = ["falling_number", "impureza_maxima", "umidade_maxima", 
-                           "pl_minimo", "ph", "w_minimo", "triguilho"]
+                        "pl_minimo", "ph", "w_minimo", "triguilho"]
             for field in wheat_fields:
                 update_fields.append(f"{field} = ?")
                 update_values.append(quality_params.get(field, ""))
             
-            soy_corn_fields = ["ardidos_avariados"]
-            for field in soy_corn_fields:
-                update_fields.append(f"{field} = ?")
-                update_values.append("")
+            update_fields.append("ardidos_avariados = ?")
+            update_values.append("")
         
         if additional_fields:
             update_fields.append("additional_fields = ?")
@@ -826,52 +829,22 @@ class ContractEditWindow(ContractWindow):
                 pdf_data["additional_fields"] = additional_fields
                 
             pdf_path = createPDF(pdf_data, self)
-            if not pdf_path:  # Usuário cancelou
+            if not pdf_path:
                 return
 
-            # 2. Se PDF gerado com sucesso, salvar no banco
             try:
                 conn = sqlite3.connect('contracts.db')
                 cursor = conn.cursor()
                 
-                columns = list(contract_data.keys())
-                values = list(contract_data.values())
-                
-                if contract_type in ("SB", "CO"):
-                    columns.extend(["umidade_maxima", "impureza_maxima", "ardidos_avariados"])
-                    values.extend([
-                        quality_params.get("umidade_maxima", ""),
-                        quality_params.get("impureza_maxima", ""),
-                        quality_params.get("ardidos_avariados", "")
-                    ])
-                elif contract_type == "WH":
-                    columns.extend([
-                        "falling_number", "impureza_maxima", "umidade_maxima",
-                        "pl_minimo", "ph", "w_minimo", "triguilho"
-                    ])
-                    values.extend([
-                        quality_params.get("falling_number", ""),
-                        quality_params.get("impureza_maxima", ""),
-                        quality_params.get("umidade_maxima", ""),
-                        quality_params.get("pl_minimo", ""),
-                        quality_params.get("ph", ""),
-                        quality_params.get("w_minimo", ""),
-                        quality_params.get("triguilho", "")
-                    ])
-
-                if additional_fields:
-                    columns.append("additional_fields")
-                    values.append(json.dumps(additional_fields))
-
-                query = f'INSERT INTO contracts ({", ".join(columns)}) VALUES ({", ".join(["?"]*len(columns))})'
-                cursor.execute(query, values)
+                query = f'UPDATE contracts SET {", ".join(update_fields)} WHERE id = ?'
+                cursor.execute(query, update_values)
                 conn.commit()
                 
-                QMessageBox.information(self, "Sucesso", f"Contrato salvo com sucesso!\nPDF gerado em:\n{pdf_path}")
+                QMessageBox.information(self, "Sucesso", f"Contrato atualizado com sucesso!\nPDF gerado em:\n{pdf_path}")
                 self.close()
                 
             except sqlite3.Error as e:
-                QMessageBox.critical(self, "Erro", f"Erro ao salvar no banco de dados: {e}")
+                QMessageBox.critical(self, "Erro", f"Erro ao atualizar no banco de dados: {e}")
                 try:
                     if os.path.exists(pdf_path):
                         os.remove(pdf_path)
