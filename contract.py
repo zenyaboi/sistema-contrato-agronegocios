@@ -66,6 +66,28 @@ class ContractWindow(QWidget):
         self.setWindowTitle("Criar Contrato")
         self.setFixedSize(800, 600)
 
+        self.default_values = {
+            "SB": {
+                "Umidade Máxima": "14",
+                "Impureza Máxima": "1 %",
+                "Ardidos e Avariados": "8"
+            },
+            "WH": {
+                "Falling Number": "250",
+                "Impureza Máxima": "1",
+                "Umidade Máxima": "13",
+                "P/L": "1",
+                "PH Mínimo": "78",
+                "W Mínimo": "250",
+                "Triguilho": "1,5"
+            },
+            "CO": {
+                "Umidade Máxima": "14",
+                "Impureza Máxima": "1 %",
+                "Ardidos e Avariados": "8"
+            }
+        }
+
         layout = QVBoxLayout()
         self.stackedWidget = QStackedWidget()
         layout.addWidget(self.stackedWidget)
@@ -190,6 +212,13 @@ class ContractWindow(QWidget):
 
     def addField(self, label):
         field = QLineEdit(self)
+        contract_type = self.cmbType.currentText()
+    
+        # Preenche com valor padrão se existir
+        if contract_type in self.default_values and label.replace(":", "") in self.default_values[contract_type]:
+            default_value = self.default_values[contract_type][label.replace(":", "")]
+            field.setText(default_value)
+
         self.dynamicLayout.addRow(label, field)
 
     def createPage4(self):
