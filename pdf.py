@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QFileDialog
 import sqlite3
 import json
 import os
+import re
 import sys
 
 def resource_path(relative_path):
@@ -287,14 +288,35 @@ def signing_text(c, contract_data):
     comprador_height = add_wrapped_text(c, 375, 155, f"{buyer['name']}", 7, max_width=180, line_height=1)
     add_wrapped_text(c, 375, 155 - comprador_height * 6 - 5, f"CNPJ: {buyer['cnpj']}", 7, max_width=200, line_height=1)
 
+def sanitize_filename(filename):
+    # Caracteres não permitidos no Windows: < > : " | ? * \ /
+    forbidden_chars = r'[<>:"|?*\\/]'
+    
+    sanitized = re.sub(forbidden_chars, '', filename)
+    
+    sanitized = re.sub(r'[\x00-\x1f\x7f]', '', sanitized)
+    
+    sanitized = re.sub(r'_+', '_', sanitized)
+    sanitized = re.sub(r'\s+', ' ', sanitized)
+    
+    sanitized = sanitized.strip(' _')
+    
+    if len(sanitized) > 200:
+        sanitized = sanitized[:200]
+    
+    return sanitized
+
 def createPDF(contract_data, parent_window=None):
     isSb = "SB" in contract_data['contract_type'] or "CO" in contract_data['contract_type']
 
     seller = get_client_data(contract_data["seller_id"])
     buyer = get_client_data(contract_data["buyer_id"])
     year = get_separate_date(contract_data["contract_date"])
+
+    seller_name_clean = sanitize_filename(seller['name'])
+    buyer_name_clean = sanitize_filename(buyer['name'])
     
-    default_filename = f"CTRVend_{contract_data['contract_number']}{contract_data['contract_type']}{year} - {seller['name']} x {buyer['name']}.pdf"
+    default_filename = f"CTRVend_{contract_data['contract_number']}{contract_data['contract_type']}{year} - {seller_name_clean} x {buyer_name_clean}.pdf"
 
     if (parent_window):
         file_path, _ = QFileDialog.getSaveFileName(
