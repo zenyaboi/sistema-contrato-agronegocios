@@ -29,18 +29,80 @@ def create_clients_db():
         ''')
         print("Tabela 'clients' criada com sucesso.")
     else:
-        # Verificar e adicionar colunas ausentes
         cursor.execute("PRAGMA table_info(clients)")
-        existing_columns = [column[1] for column in cursor.fetchall()]
+        current_columns = cursor.fetchall()
+        existing_columns = [column[1] for column in current_columns]
         
-        columns_to_add = [
-            ('bankName', 'TEXT')
-        ]
+        expected_order = ['id', 'name', 'cnpj', 'address', 'ie', 'city', 'state', 'cep', 'bank', 'bankName', 'agency', 'account']
         
-        for column, col_type in columns_to_add:
-            if column not in existing_columns:
-                cursor.execute(f"ALTER TABLE clients ADD COLUMN {column} {col_type}")
-                print(f"Coluna '{column}' adicionada à tabela 'clients'.")
+        bankname_exists = 'bankName' in existing_columns
+        needs_recreation = False
+        
+        if not bankname_exists:
+            print("Coluna 'bankName' não existe. Será adicionada na posição correta.")
+            needs_recreation = True
+        else:
+            bankname_position = -1
+            for i, column in enumerate(current_columns):
+                if column[1] == 'bankName':
+                    bankname_position = i
+                    break
+            
+            expected_bankname_position = expected_order.index('bankName')
+            
+            if bankname_position != expected_bankname_position:
+                print(f"Coluna 'bankName' está na posição {bankname_position}, mas deveria estar na posição {expected_bankname_position}.")
+                needs_recreation = True
+            else:
+                print("Tabela 'clients' já está com a estrutura correta.")
+        
+        if needs_recreation:
+            print("Recriando tabela 'clients' com ordem correta das colunas...")
+            
+            cursor.execute("SELECT * FROM clients")
+            existing_data = cursor.fetchall()
+            
+            cursor.execute("ALTER TABLE clients RENAME TO clients_backup")
+            
+            cursor.execute('''
+            CREATE TABLE clients (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                cnpj TEXT NOT NULL,
+                address TEXT,
+                ie TEXT,
+                city TEXT,
+                state TEXT,
+                cep TEXT,
+                bank TEXT,
+                bankName TEXT,
+                agency TEXT,
+                account TEXT
+            )
+            ''')
+            
+            old_column_names = [col[1] for col in current_columns]
+            
+            column_mapping = []
+            for new_col in expected_order:
+                if new_col in old_column_names:
+                    column_mapping.append(old_column_names.index(new_col))
+                else:
+                    column_mapping.append(None)
+            
+            for row in existing_data:
+                new_row = []
+                for col_index in column_mapping:
+                    if col_index is not None:
+                        new_row.append(row[col_index])
+                    else:
+                        new_row.append(None)
+                
+                placeholders = ','.join(['?' for _ in new_row])
+                cursor.execute(f"INSERT INTO clients VALUES ({placeholders})", new_row)
+            
+            cursor.execute("DROP TABLE clients_backup")
+            print("Tabela 'clients' recriada com sucesso na ordem correta.")
 
     conn.commit()
     conn.close()

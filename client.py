@@ -170,7 +170,7 @@ class AddClientWindow(QWidget):
             # Inserir cliente
             cursor.execute('''
             INSERT INTO clients (name, cnpj, address, ie, city, state, cep, bank, bankName, agency, account)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 client_data["name"],
                 client_data["cnpj"],
