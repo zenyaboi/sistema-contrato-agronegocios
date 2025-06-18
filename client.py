@@ -115,6 +115,10 @@ class AddClientWindow(QWidget):
         self.txtBank = QLineEdit(self)
         layout.addRow("Banco:", self.txtBank)
 
+        # Nome no Banco
+        self.txtBankName = QLineEdit(self)
+        layout.addRow("Nome no Banco:", self.txtBankName)
+
         # Agência
         self.txtAgency = QLineEdit(self)
         layout.addRow("Agência:", self.txtAgency)
@@ -142,6 +146,7 @@ class AddClientWindow(QWidget):
             "state": self.txtState.text(),
             "cep": self.txtCEP.text(),
             "bank": self.txtBank.text(),
+            "bank_name": self.txtBankName.text(),
             "agency": self.txtAgency.text(),
             "account": self.txtAccount.text()
         }
@@ -164,7 +169,7 @@ class AddClientWindow(QWidget):
 
             # Inserir cliente
             cursor.execute('''
-            INSERT INTO clients (name, cnpj, address, ie, city, state, cep, bank, agency, account)
+            INSERT INTO clients (name, cnpj, address, ie, city, state, cep, bank, bankName, agency, account)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (
                 client_data["name"],
@@ -175,6 +180,7 @@ class AddClientWindow(QWidget):
                 client_data["state"],
                 client_data["cep"],
                 client_data["bank"],
+                client_data["bank_name"],
                 client_data["agency"],
                 client_data["account"]
             ))
@@ -364,6 +370,7 @@ class EditClientFormWindow(QWidget):
         self.txtCEP = FocusAwareLineEdit()
         self.txtCEP.setInputMask("00.000-000")
         self.txtBank = QLineEdit()
+        self.txtBankName = QLineEdit()
         self.txtAgency = QLineEdit()
         self.txtAccount = QLineEdit()
         
@@ -376,6 +383,7 @@ class EditClientFormWindow(QWidget):
         layout.addRow("UF:", self.txtState)
         layout.addRow("CEP:", self.txtCEP)
         layout.addRow("Banco:", self.txtBank)
+        layout.addRow("Nome no Banco:", self.txtBankName)
         layout.addRow("Agência:", self.txtAgency)
         layout.addRow("Conta:", self.txtAccount)
         
@@ -409,8 +417,9 @@ class EditClientFormWindow(QWidget):
                 self.txtState.setText(client[6] or "")
                 self.txtCEP.setText(client[7] or "")
                 self.txtBank.setText(client[8] or "")
-                self.txtAgency.setText(client[9] or "")
-                self.txtAccount.setText(client[10] or "")
+                self.txtBankName.setText(client[9] or "")
+                self.txtAgency.setText(client[10] or "")
+                self.txtAccount.setText(client[11] or "")
             
         except sqlite3.Error as e:
             QMessageBox.critical(self, "Erro", f"Erro ao carregar cliente: {e}")
@@ -426,7 +435,7 @@ class EditClientFormWindow(QWidget):
             
             cursor.execute('''
             UPDATE clients SET name=?, cnpj=?, address=?, ie=?, city=?, 
-                             state=?, cep=?, bank=?, agency=?, account=?
+                             state=?, cep=?, bank=?, bankName=?, agency=?, account=?
             WHERE id=?
             ''', (
                 self.txtName.text(),
@@ -437,6 +446,7 @@ class EditClientFormWindow(QWidget):
                 self.txtState.text(),
                 self.txtCEP.text(),
                 self.txtBank.text(),
+                self.txtBankName.text(),
                 self.txtAgency.text(),
                 self.txtAccount.text(),
                 self.client_id

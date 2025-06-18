@@ -22,13 +22,25 @@ def create_clients_db():
             state TEXT,
             cep TEXT,
             bank TEXT,
+            bankName TEXT,
             agency TEXT,
             account TEXT
         )
         ''')
         print("Tabela 'clients' criada com sucesso.")
     else:
-        print("Tabela 'clients' já existe.")
+        # Verificar e adicionar colunas ausentes
+        cursor.execute("PRAGMA table_info(clients)")
+        existing_columns = [column[1] for column in cursor.fetchall()]
+        
+        columns_to_add = [
+            ('bankName', 'TEXT')
+        ]
+        
+        for column, col_type in columns_to_add:
+            if column not in existing_columns:
+                cursor.execute(f"ALTER TABLE clients ADD COLUMN {column} {col_type}")
+                print(f"Coluna '{column}' adicionada à tabela 'clients'.")
 
     conn.commit()
     conn.close()
