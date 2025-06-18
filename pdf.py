@@ -38,8 +38,9 @@ def get_client_data(client_id):
             'state': client[6],
             'cep': client[7],
             'bank': client[8],
-            'agency': client[9],
-            'account': client[10]
+            'bank_name': client[9],
+            'agency': client[10],
+            'account': client[11]
         }
     return None
 
@@ -273,7 +274,7 @@ def payment_info_text(c, contract_data):
     add_wrapped_text(c, 138, 692, f"BANCO: {seller['bank']}", 7, max_width=200, line_height=1)
     add_wrapped_text(c, 308, 692, f"{seller['agency']}", 7, max_width=100, line_height=1)
     add_wrapped_text(c, 408, 692, f"{seller['account']}", 7, max_width=100, line_height=1)
-    add_wrapped_text(c, 138, 679, f"{seller['name']}", 7, max_width=100, line_height=1)
+    add_wrapped_text(c, 138, 679, f"{seller['bank_name']}", 7, max_width=100, line_height=1)
     add_wrapped_text(c, 298, 679, f"{seller['cnpj']}", 7, max_width=100, line_height=1)
     add_wrapped_text(c, 136, 661, f"{contract_data['delivPlace']}", 7, max_width=150, line_height=1)
     add_wrapped_text(c, 290, 661, f"{contract_data['stateDelivPlace']}", 7, max_width=100, line_height=1)
