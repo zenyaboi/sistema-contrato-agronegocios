@@ -181,11 +181,11 @@ def sb_co_text(c, contract_data):
     add_wrapped_text(c, 291, 791, f"{contract_data['impureza_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 359, 791, f"{contract_data['ardidos_avariados']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
 
-    add_wrapped_text(c, 150, 555, f"{contract_data['quantity']} TONELADAS MÉTRICAS", 9, max_width=200, line_height=1)
-    add_wrapped_text(c, 150, 541, f"R$ {contract_data['price']}/SC. 60KG", 9, max_width=200, line_height=1)
-    add_wrapped_text(c, 150, 528, f"{contract_data['payment']}", 9, max_width=200, line_height=1)
-    add_wrapped_text(c, 150, 513, f"{contract_data['weight_quality']}", 9, max_width=200, line_height=1)
-    add_wrapped_text(c, 150, 500, f"{contract_data['delivery']}", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 555, f"{contract_data['quantity']} TONELADAS MÉTRICAS", 9, max_width=400, line_height=1)
+    add_wrapped_text(c, 150, 541, f"R$ {contract_data['price']}/SC. 60KG", 9, max_width=400, line_height=1)
+    add_wrapped_text(c, 150, 528, f"{contract_data['payment']}", 9, max_width=400, line_height=1)
+    add_wrapped_text(c, 150, 513, f"{contract_data['weight_quality']}", 9, max_width=400, line_height=1)
+    add_wrapped_text(c, 150, 500, f"{contract_data['delivery']}", 9, max_width=400, line_height=1)
 
 def wh_text(c, contract_data):
     # product info (WH)
@@ -199,11 +199,11 @@ def wh_text(c, contract_data):
     add_wrapped_text(c, 490, 788, f"{contract_data['impureza_maxima']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
     add_wrapped_text(c, 557, 788, f"{contract_data['triguilho']}", 8, font_name="Helvetica", max_width=100, line_height=1, alignment="center")
 
-    add_wrapped_text(c, 150, 630, f"{contract_data['quantity']} TONELADAS MÉTRICAS", 9, max_width=200, line_height=1)
-    add_wrapped_text(c, 150, 615, f"R${contract_data['price']}/TONELADA MÉTRICA", 9, max_width=200, line_height=1)
-    add_wrapped_text(c, 150, 600, f"{contract_data['payment']}", 9, max_width=200, line_height=1)
-    add_wrapped_text(c, 150, 587, f"{contract_data['weight_quality']}", 9, max_width=200, line_height=1)
-    add_wrapped_text(c, 150, 574, f"{contract_data['delivery']}", 9, max_width=200, line_height=1)
+    add_wrapped_text(c, 150, 630, f"{contract_data['quantity']} TONELADAS MÉTRICAS", 9, max_width=400, line_height=1)
+    add_wrapped_text(c, 150, 615, f"R${contract_data['price']}/TONELADA MÉTRICA", 9, max_width=400, line_height=1)
+    add_wrapped_text(c, 150, 600, f"{contract_data['payment']}", 9, max_width=400, line_height=1)
+    add_wrapped_text(c, 150, 587, f"{contract_data['weight_quality']}", 9, max_width=400, line_height=1)
+    add_wrapped_text(c, 150, 574, f"{contract_data['delivery']}", 9, max_width=400, line_height=1)
     add_wrapped_text(c, 27, 520, "Trigo isento de insetos vivos e/ou mortos (caso haja incidência, as cargas serão devolvidas, e o vendedor será responsável pelo custo do frete).", 
                     10, max_width=550, line_height=12)
 
